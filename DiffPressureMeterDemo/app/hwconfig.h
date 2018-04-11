@@ -4,12 +4,12 @@
 #include "mbed.h"
 
 // HX8347D - TFT_LCD 
-#define LCD_SPI_MOSI_PIN        PB_5 //PA_7 
-#define LCD_SPI_MISO_PIN        PB_4 //PA_6
-#define LCD_SPI_SCLK_PIN        PB_3 //PA_5 
-#define LCD_DC_PIN              PB_1 //PA_8
-#define LCD_BKL_PIN             PB_2 //PC_7
-#define LCD_CS_PIN              PB_15//PC_4//PB_6
+#define LCD_SPI_MOSI_PIN        PA_7 
+#define LCD_SPI_MISO_PIN        PA_6
+#define LCD_SPI_SCLK_PIN        PA_5 
+#define LCD_DC_PIN              PA_8
+#define LCD_BKL_PIN             PC_7
+#define LCD_CS_PIN              PB_6
 
 
 // DS3231 - RTC 
@@ -18,8 +18,8 @@
 #define DS3231_SQW_PIN          PC_8     
 
 // ADS1115 - 16BIT ADC 
-#define ADS1115_I2C_SDA_PIN     PC_9 //I2C3_SDA
-#define ADS1115_I2C_SCL_PIN     PA_8 //I2C3_SCL
+#define ADS1115_I2C_SDA_PIN     PB_3 //I2C2_SDA TODO
+#define ADS1115_I2C_SCL_PIN     PB_10 //I2C2_SCL
 #define ADS1115_ADDR_PIN        GND  //ADS1115 addr = 0x48 
 #define ADS1115_ALERT_RDY_PIN   PC_8
 

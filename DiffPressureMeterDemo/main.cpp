@@ -11,18 +11,19 @@ Serial usb(USBTX, USBRX);
 int main()
 {
     // LCD
-    spii.format(8,3);
-    spii.frequency(100000); // 1MHz clock
+    spii.format(8, 3);
+    spii.frequency(1200000); // 1MHz clock
     usb.printf("HELLO WORLD !");  
     lcd.lcd_init();                                      // init TFT library
     const uint8_t *str = (const uint8_t *)"Helllo!";
-    lcd.lcd_display_string(30, 50, str, 10, RED);
+    lcd.lcd_display_string(60, 120, (const uint8_t *)"Hello, world !", FONT_1608, RED);
+    lcd.lcd_display_string(30, 152, (const uint8_t *)"2.8' TFT Touch Shield", FONT_1608, RED);
     // RTC
     rtctime::Time time{2018, 4, 10, 1, 2, 40, 0};
-    //if (ExternalRTC::instance().setTime(time))
+    /*if (ExternalRTC::instance().setTime(time))
     {
         usb.printf("\r setTime ERROR occured !\t\n");   
-    }
+    }*/
 
     // PRESSURE SENSOR
     //
@@ -47,8 +48,8 @@ int main()
                         ExternalRTC::getMonthString(time));            
         }
         // PRESSURE SENSOR
-        PressureSensor::instance().performMeasurement();
-        usb.printf("\rLast dif pressure: %3.3f\t\n", PressureSensor::instance().getLastResult());  
+        //PressureSensor::instance().performMeasurement();
+        //usb.printf("\rLast dif pressure: %3.3f\t\n", PressureSensor::instance().getLastResult());  
     }
 }
  

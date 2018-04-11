@@ -1,21 +1,19 @@
-
-
 #include <LCD.h>
 inline int max(int a,int b) {return ((a)>(b)?(a):(b)); }
 inline int min(int a,int b) {return ((a)<(b)?(a):(b)); }
-LCD::LCD()
+LCD_TFT::LCD_TFT()
 	: __LCD_CS_OUT()
 	, __LCD_DC_OUT()
 	, __LCD_BKL_OUT() 
 {
 }
 
-void LCD::lcd_init()
+void LCD_TFT::lcd_init()
 {
-    __LCD_CS_SET();
 	__LCD_DC_SET();
+    __LCD_CS_SET();
     __LCD_BKL_OFF();
-	__LCD_CS_CLR();
+
 	//Driving ability Setting
 	lcd_write_register(0xEA,0x00); //PTBA[15:8]
 	lcd_write_register(0xEB,0x20); //PTBA[7:0]
@@ -53,7 +51,6 @@ void LCD::lcd_init()
 	lcd_write_register(0x5B,0x0C); //
 	lcd_write_register(0x5C,0x1D); //
 	lcd_write_register(0x5D,0xCC); //
-
 	//Power Voltage Setting
 	lcd_write_register(0x1B,0x1B); //VRH=4.65V
 	lcd_write_register(0x1A,0x01); //BT (VGH~15V,VGL~-10V,DDVDH~5V)
@@ -66,20 +63,20 @@ void LCD::lcd_init()
 	lcd_write_register(0x19,0x01); //OSC_EN='1', start Osc
 	lcd_write_register(0x01,0x00); //DP_STB='0', out deep sleep
 	lcd_write_register(0x1F,0x88);// GAS=1, VOMG=00, PON=0, DK=1, XDK=0, DVDH_TRI=0, STB=0
-	wait_ms(50);
+	wait_ms(5);
 	lcd_write_register(0x1F,0x80);// GAS=1, VOMG=00, PON=0, DK=0, XDK=0, DVDH_TRI=0, STB=0
-	wait_ms(50);
+	wait_ms(5);
 	lcd_write_register(0x1F,0x90);// GAS=1, VOMG=00, PON=1, DK=0, XDK=0, DVDH_TRI=0, STB=0
-	wait_ms(50);
+	wait_ms(5);
 	lcd_write_register(0x1F,0xD0);// GAS=1, VOMG=10, PON=1, DK=0, XDK=0, DDVDH_TRI=0, STB=0
-	wait_ms(50);
+	wait_ms(5);
 	//262k/65k color selection
 	lcd_write_register(0x17,0x05); //default 0x06 262k color // 0x05 65k color
 	//SET PANEL
 	lcd_write_register(0x36,0x00); //SS_P, GS_P,REV_P,BGR_P
 	//Display ON Setting
 	lcd_write_register(0x28,0x38); //GON=1, DTE=1, D=1000
-	wait_ms(400);
+	wait_ms(40);
 	lcd_write_register(0x28,0x3F); //GON=1, DTE=1, D=1100
 
 	lcd_write_register(0x16,0x18); 
@@ -92,19 +89,16 @@ void LCD::lcd_init()
 	lcd_write_register(0x07,0x00); //Row Start
 	lcd_write_register(0x08,0x01);
 	lcd_write_register(0x09,0x3F); //Row End
-
-    lcd_clear_screen(RED);
-	__LCD_BKL_ON();
-
-
 	
+    lcd_clear_screen(WHITE);
+	__LCD_BKL_ON();	
 }
 
 //draw a point on the lcd with the specified color.
 //hwXpos specify x position.
 //hwYpos specify y position.
 //hwColor color of the point.
-void LCD::lcd_draw_point(uint16_t hwXpos, uint16_t hwYpos, uint16_t hwColor) 
+void LCD_TFT::lcd_draw_point(uint16_t hwXpos, uint16_t hwYpos, uint16_t hwColor) 
 {
 	if (hwXpos >= LCD_WIDTH || hwYpos >= LCD_HEIGHT) {
 		return;
@@ -116,7 +110,7 @@ void LCD::lcd_draw_point(uint16_t hwXpos, uint16_t hwYpos, uint16_t hwColor)
 }
 
 //display a char at the specified position on lcd.
-void LCD::lcd_display_char(uint16_t hwXpos, //specify x position.
+void LCD_TFT::lcd_display_char(uint16_t hwXpos, //specify x position.
                          uint16_t hwYpos, //specify y position.
                          uint8_t chChr,   //a char is display.
                          uint8_t chSize,  //specify the size of the char
@@ -164,7 +158,7 @@ static uint32_t _pow(uint8_t m, uint8_t n)
 }
 
 //display a number at the specified position on lcd.
-void LCD::lcd_display_num(uint16_t hwXpos,  //specify x position.
+void LCD_TFT::lcd_display_num(uint16_t hwXpos,  //specify x position.
                           uint16_t hwYpos, //specify y position.
                           uint32_t chNum,  //a number is display.
                           uint8_t chLen,   //length ot the number
@@ -193,7 +187,7 @@ void LCD::lcd_display_num(uint16_t hwXpos,  //specify x position.
 } 
 
 //display a string at the specified position on lcd.
-void LCD::lcd_display_string(uint16_t hwXpos, //specify x position.
+void LCD_TFT::lcd_display_string(uint16_t hwXpos, //specify x position.
                          uint16_t hwYpos,   //specify y position.
                          const uint8_t *pchString,  //a pointer to string
                          uint8_t chSize,    // the size of the string 
@@ -221,7 +215,7 @@ void LCD::lcd_display_string(uint16_t hwXpos, //specify x position.
 }
 
 //draw a line at the specified position on lcd.
-void LCD::lcd_draw_line(uint16_t hwXpos0, //specify x0 position.
+void LCD_TFT::lcd_draw_line(uint16_t hwXpos0, //specify x0 position.
                       uint16_t hwYpos0, //specify y0 position.
                       uint16_t hwXpos1, //specify x1 position.
                       uint16_t hwYpos1, //specify y1 position.
@@ -252,7 +246,7 @@ void LCD::lcd_draw_line(uint16_t hwXpos0, //specify x0 position.
 }
 
 //draw a circle at the specified position on lcd.
-void LCD::lcd_draw_circle(uint16_t hwXpos,  //specify x position.
+void LCD_TFT::lcd_draw_circle(uint16_t hwXpos,  //specify x position.
                         uint16_t hwYpos,  //specify y position.
                         uint16_t hwRadius, //specify the radius of the circle.
                         uint16_t hwColor)  //specify the color of the circle.
@@ -278,7 +272,7 @@ void LCD::lcd_draw_circle(uint16_t hwXpos,  //specify x position.
 }
 
 //fill a rectangle out at the specified position on lcd.
-void LCD::lcd_fill_rect(uint16_t hwXpos,  //specify x position.
+void LCD_TFT::lcd_fill_rect(uint16_t hwXpos,  //specify x position.
                    uint16_t hwYpos,  //specify y position.
                    uint16_t hwWidth, //specify the width of the rectangle.
                    uint16_t hwHeight, //specify the height of the rectangle.
@@ -298,7 +292,7 @@ void LCD::lcd_fill_rect(uint16_t hwXpos,  //specify x position.
 }
 
 //draw a vertical line at the specified position on lcd.
-void LCD::lcd_draw_v_line(uint16_t hwXpos, //specify x position.
+void LCD_TFT::lcd_draw_v_line(uint16_t hwXpos, //specify x position.
                         uint16_t hwYpos, //specify y position. 
                         uint16_t hwHeight, //specify the height of the vertical line.
                         uint16_t hwColor)  //specify the color of the vertical line.
@@ -315,7 +309,7 @@ void LCD::lcd_draw_v_line(uint16_t hwXpos, //specify x position.
 }
 
 //draw a horizonal line at the specified position on lcd.
-void LCD::lcd_draw_h_line(uint16_t hwXpos, //specify x position.
+void LCD_TFT::lcd_draw_h_line(uint16_t hwXpos, //specify x position.
                         uint16_t hwYpos,  //specify y position. 
                         uint16_t hwWidth, //specify the width of the horizonal line.
                         uint16_t hwColor) //specify the color of the horizonal line.
@@ -331,7 +325,7 @@ void LCD::lcd_draw_h_line(uint16_t hwXpos, //specify x position.
     }
 }
 
-void LCD::lcd_draw_rect(uint16_t hwXpos,  //specify x position.
+void LCD_TFT::lcd_draw_rect(uint16_t hwXpos,  //specify x position.
                       uint16_t hwYpos,  //specify y position.
                       uint16_t hwWidth, //specify the width of the rectangle.
                       uint16_t hwHeight, //specify the height of the rectangle.
@@ -348,7 +342,7 @@ void LCD::lcd_draw_rect(uint16_t hwXpos,  //specify x position.
 }
 
 
-LCD lcd = LCD();
+LCD_TFT lcd = LCD_TFT();
 /*********************************************************************************************************
   END FILE
 *********************************************************************************************************/

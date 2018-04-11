@@ -32,27 +32,26 @@
 #define LCD_HEIGHT   320
 
 
-#define __LCD_CS_OUT()    lcd_cs_pin(LCD_CS_PIN)
+#define __LCD_CS_OUT()    lcd_cs_pin(LCD_CS_PIN, HIGH)
 #define __LCD_CS_CLR()    lcd_cs_pin.write(LOW)
 #define __LCD_CS_SET()    lcd_cs_pin.write(HIGH)
 
-#define __LCD_DC_OUT()    lcd_dc_pin(LCD_DC_PIN)
-#define __LCD_DC_CLR()    lcd_dc_pin.write(HIGH)
-#define __LCD_DC_SET()    lcd_dc_pin.write(LOW)
+#define __LCD_DC_OUT()    lcd_dc_pin(LCD_DC_PIN, HIGH)
+#define __LCD_DC_CLR()    lcd_dc_pin.write(LOW)
+#define __LCD_DC_SET()    lcd_dc_pin.write(HIGH)
 
-#define __LCD_BKL_OUT()   lcd_bkl_pin(LCD_BKL_PIN)
+#define __LCD_BKL_OUT()   lcd_bkl_pin(LCD_BKL_PIN, LOW)
 #define __LCD_BKL_OFF()   lcd_bkl_pin.write(LOW)
 #define __LCD_BKL_ON()    lcd_bkl_pin.write(HIGH)
-
 extern SPI spii;
 #define __LCD_WRITE_BYTE(__DATA) spii.write(__DATA)
 
-class LCD
+class LCD_TFT
 {
 
 public:
 
-	LCD();
+	LCD_TFT();
 
 	void lcd_write_byte(uint8_t chByte, uint8_t chCmd)
 	{
@@ -77,8 +76,8 @@ public:
 	}
 
 	
-	//write a word(two bytes) to the specified register of lcd.
-	//chRegister address of the register of lcd.
+	//write a word(two bytes) to the specified register of LCD_TFT.
+	//chRegister address of the register of LCD_TFT.
 	//hwValue value is written to the specified register.
 	void lcd_write_register(uint8_t chRegister, uint8_t chValue)
 	{
@@ -86,7 +85,7 @@ public:
 		lcd_write_byte(chValue, LCD_DATA);
 	}
 
-	//set the specified position of cursor on lcd.
+	//set the specified position of cursor on LCD_TFT.
 	//hwXpos specify x position
 	//hwYpos specify y position
 	void lcd_set_cursor(uint16_t hwXpos, uint16_t hwYpos)
@@ -101,7 +100,7 @@ public:
 		lcd_write_register(0x07, hwYpos & 0xFF); //Row Start
 	}
 
-    //clear the lcd with the specified color.
+    //clear the LCD_TFT with the specified color.
 	void lcd_clear_screen(uint16_t hwColor)  
 	{
 		uint32_t i, wCount = LCD_WIDTH;
@@ -127,14 +126,14 @@ public:
                          uint8_t chChr,   //a char is display.
                          uint8_t chSize,  //specify the size of the char
                          uint16_t hwColor); //specify the color of the char
-	//display a number at the specified position on lcd.
+	//display a number at the specified position on LCD_TFT.
 	void lcd_display_num(uint16_t hwXpos,  //specify x position.
 	                          uint16_t hwYpos, //specify y position.
 	                          uint32_t chNum,  //a number is display.
 	                          uint8_t chLen,   //length ot the number
 	                          uint8_t chSize,  //specify the size of the number
 	                          uint16_t hwColor); //specify the color of the number
-	//display a string at the specified position on lcd.
+	//display a string at the specified position on LCD_TFT.
 	void lcd_display_string(uint16_t hwXpos, //specify x position.
 	                         uint16_t hwYpos,   //specify y position.
 	                         const uint8_t *pchString,  //a pointer to string
@@ -175,7 +174,7 @@ private:
                        
 };
 
-extern LCD lcd;
+extern LCD_TFT lcd;
 
 #endif
 
