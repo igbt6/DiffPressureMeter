@@ -107,7 +107,7 @@ void TP::tp_adjust(void)
 	float fac;				
 
 	lcd.lcd_clear_screen(WHITE);
-	lcd.lcd_display_string(40, 40, (const uint8_t *)"Please use the stylus click the cross on the screen. The cross will always move until the screen adjustment is completed.",
+	lcd.lcd_display_string(40, 40, (const uint8_t *)"Please click the cross on the screen. The cross will always move until the screen adjustment is completed.",
 					16, RED);
 	tp_draw_touch_point(20, 20, RED);
 	s_tTouch.chStatus = 0;
@@ -156,7 +156,7 @@ void TP::tp_adjust(void)
 						//Serial.print(d2, DEC);
 						//Serial.print("\t"); 
 						//Serial.println(fac, 2);
- 						tp_show_info(pos_temp[0][0],pos_temp[0][1],pos_temp[1][0],pos_temp[1][1],pos_temp[2][0],pos_temp[2][1],pos_temp[3][0],pos_temp[3][1],fac*100);//??��o?��oy?Y   
+ 						tp_show_info(pos_temp[0][0],pos_temp[0][1],pos_temp[1][0],pos_temp[1][1],pos_temp[2][0],pos_temp[2][1],pos_temp[3][0],pos_temp[3][1],fac*100);
 						wait_ms(1000);
 						lcd.lcd_fill_rect(96, 240, 24, 16, WHITE);
 						tp_draw_touch_point(LCD_WIDTH - 20, LCD_HEIGHT - 20, WHITE);
@@ -238,7 +238,7 @@ void TP::tp_adjust(void)
 					}
 					lcd.lcd_clear_screen(WHITE);
 					lcd.lcd_display_string(35, 110, (const uint8_t *)"Touch Screen Adjust OK!", 16, BLUE);
-					wait_ms(1000);
+					wait_ms(2000);
  					lcd.lcd_clear_screen(WHITE);  
 					return;				 
 			}
