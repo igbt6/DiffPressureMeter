@@ -18,9 +18,9 @@
 #define DS3231_SQW_PIN          PC_8     
 
 // ADS1115 - 16BIT ADC 
-#define ADS1115_I2C_SDA_PIN     PB_3  //I2C2_SDA TODO
+#define ADS1115_I2C_SDA_PIN     PB_3 //I2C2_SDA TODO
 #define ADS1115_I2C_SCL_PIN     PB_10 //I2C2_SCL
-#define ADS1115_ADDR_PIN        GND   //ADS1115 addr = 0x48 
+#define ADS1115_ADDR_PIN        GND  //ADS1115 addr = 0x48 
 #define ADS1115_ALERT_RDY_PIN   PC_8
 
 // CSN_A2L - THERMAL_PRINTER
