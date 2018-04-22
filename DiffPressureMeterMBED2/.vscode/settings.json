@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "xlocale": "cpp",
+        "algorithm": "cpp",
+        "istream": "cpp",
+        "lib_config.h": "c",
+        "system_error": "cpp",
+        "type_traits": "cpp",
+        "xstddef": "cpp",
+        "xmemory0": "cpp",
+        "ctime": "cpp",
+        "utility": "cpp",
+        "xtr1common": "cpp",
+        "xutility": "cpp",
+        "xiosbase": "cpp",
+        "ostream": "cpp",
+        "xstring": "cpp"
+    }
+}
