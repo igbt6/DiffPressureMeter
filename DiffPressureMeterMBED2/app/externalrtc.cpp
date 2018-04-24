@@ -23,7 +23,7 @@ bool ExternalRTC::setTime(const rtctime::Time& time)
     _time.seconds = time.seconds;
     _time.minutes = time.minutes;
     _time.hours   = time.hours;
-    _time.am_pm   = 0;
+    _time.mode    = 0;
     _time.am_pm   = 0; // 24H
 
     ds3231_calendar_t _cal;
@@ -155,11 +155,20 @@ char *ExternalRTC::getDateString(const rtctime::Time& time)
 //-----------------------------------------------------------------------------
 char *ExternalRTC::getTimeDateString(const Time& time)
 {
-    static char strTimeDate[] = "xxxxxxxxxxxxxxxxxxx";
+    static char strTimeDate[30] = {' '};
     const int timeStrLen = 8;
     const int dateStrLen = 10;
     memcpy(strTimeDate, getTimeString(time), timeStrLen);
-    memcpy(&strTimeDate[timeStrLen], getDateString(time), dateStrLen);
+    memcpy(&strTimeDate[timeStrLen+5], getDateString(time), dateStrLen);
+    // remove nulls
+    for (int i = 0; i < 30; ++i)
+    {
+        if ( i < 24 && strTimeDate[i] == '\0')
+        {
+            strTimeDate[i] = ' ';
+        }   
+    }
+    return (char*)&strTimeDate;
 }
 
 //-----------------------------------------------------------------------------

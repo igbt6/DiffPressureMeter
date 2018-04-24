@@ -36,8 +36,9 @@ private:
   MainApp & operator=(const MainApp& rtc);
   int mainMenu();
   int settingsMenu();
-  void drawFrame(const char* txt);
+  void drawFrame();
   void updateTime();
+  void updateTimeTask();
 
 private:
     LUTFT tft;
@@ -46,6 +47,7 @@ private:
     SettingsMeasurement settingsMeasurement;
     Measurement measurement;
     AppState currentState;
+    volatile bool _updateTime;
 };
 
 

@@ -75,7 +75,7 @@ void SettingsDateTime::setDateTime()
     t_temp.seconds=0;
     ct=true;
     cd=true;
-    printf("\r RTC-getTime ERROR occured !\t\n");  
+    printf("\r[SettingsDateTime] RTC-getTime ERROR occured !\t\n");  
   }
   
   if (t_temp.hours<10)
@@ -441,13 +441,13 @@ void SettingsDateTime::setDateTime()
         {
             if ((x>=165) && (x<=319))
             {
-              res=1;
+              res = 1;
               tft.setColor (255, 0, 0);
               tft.drawRoundRect(165, 200, 319, 239);
             }
             else if ((x>=0) && (x<=154))
             {
-              res=2;
+              res = 2;
               tft.setColor (255, 0, 0);
               tft.drawRoundRect(0, 200, 154, 239);
             }
@@ -461,12 +461,16 @@ void SettingsDateTime::setDateTime()
     {
         if (ct or cd)
         {
-            ExternalRTC::instance().setTime(t_temp);
+            if (!ExternalRTC::instance().setTime(t_temp))
+            {
+                printf("\r[SettingsDateTime] RTC time modified !\t\n");
+            }
+            else
+            {
+                printf("\r[SettingsDateTime] RTC seTime error occured !\t\n");
+            }
         }
-    }
-    
-    //drawDisplay();
-    //printDate();
+    }  
 }
 
 //-----------------------------------------------------------------------------

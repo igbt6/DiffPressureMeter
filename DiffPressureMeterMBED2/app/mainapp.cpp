@@ -26,6 +26,7 @@ MainApp::MainApp()
     , settingsMeasurement(tft, touch)
     , measurement(tft, touch)
     , currentState(sMainMenu)
+    , _updateTime(false)
 {
     tft.InitLCD(LANDSCAPE);
     touch.InitTouch(SettingsMemory::instance().appSettings().calibCoeffs, tft.getOrientation());
@@ -95,12 +96,14 @@ int MainApp::mainMenu()
             tft.print(msg,0,50);
     }
     */
-    Ticker updateTime;
-    updateTime.attach(this, &MainApp::updateTime, 1); // every 1 second
-    UTFT_Buttons  buttons(&tft, &touch);
     tft.clrScr();
     tft.setFont(SmallFont);
+    Ticker updateTimeTask;
+    updateTimeTask.attach(this, &MainApp::updateTimeTask, 1); // every 1 second
+    UTFT_Buttons  buttons(&tft, &touch);
 
+    drawFrame();
+    updateTime();
     touch.setPrecision(PREC_MEDIUM);
 
     buttons.setTextFont(BigFont);
@@ -127,7 +130,14 @@ int MainApp::mainMenu()
                 return 2;
             }
         }
+        
+        if (_updateTime)
+        {
+            updateTime();
+            _updateTime = false;
+        }
     }
+
     return 0;  
 }
 
@@ -146,7 +156,7 @@ int MainApp::settingsMenu()
     butDateTime = buttons.addButton( 10,  60, 300,  30, "Ustawienia czasu");
     butMeasurement = buttons.addButton( 10, 100, 300,  30, "Ustawienia pomiaru");
     butOther = buttons.addButton( 10, 140, 300,  30, "Inne");
-    butBack = buttons.addButton(  0, 199, 100,  40, "i", BUTTON_SYMBOL);
+    butBack = buttons.addButton(  0, 199, 100,  40, "I", BUTTON_SYMBOL);
 
 clean:    
     tft.clrScr();
@@ -181,14 +191,13 @@ clean:
 }
 
 //-----------------------------------------------------------------------------
-void MainApp::drawFrame(const char* txt)
+void MainApp::drawFrame()
 {
     tft.setColor(VGA_BLUE);
     tft.fillRect(0, 0, tft.getDisplayXSize()-1, 20);
     tft.setColor(VGA_WHITE);
     tft.setBackColor(VGA_BLUE);
     tft.drawLine(0, 21, tft.getDisplayXSize()-1, 21);
-    tft.print(txt, CENTER, 1);
     tft.setBackColor(VGA_BLACK);
 }
 //-----------------------------------------------------------------------------
@@ -200,21 +209,22 @@ void MainApp::updateTime()
         if (ExternalRTC::instance().getTime(currentTime))
         {
             printf("\r getTime ERROR occured !\t\n");
-            drawFrame("----------------"); 
+            tft.print("----------------", CENTER, 5);
         }
         else
         {
-            printf("\rCurrent time: %s,  %s, %s, %s\t\n",
-                    ExternalRTC::getDateString(currentTime),       
-                    ExternalRTC::getTimeString(currentTime),
-                    ExternalRTC::getDayOfWeekString(currentTime),
-                    ExternalRTC::getMonthString(currentTime));         
-            drawFrame(ExternalRTC::getTimeDateString(currentTime));
+            tft.setColor(VGA_WHITE);
+            tft.setBackColor(VGA_BLUE);
+            tft.print(ExternalRTC::getTimeDateString(currentTime), CENTER, 5);
         }
     }
 }
-//-----------------------------------------------------------------------------
 
+//-----------------------------------------------------------------------------
+void MainApp::updateTimeTask()
+{
+    _updateTime = true;
+}
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
