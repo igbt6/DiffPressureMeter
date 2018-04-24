@@ -6,10 +6,6 @@
 
 #include "LUTouch.h"
 
-const CalibCoefficients k_defaultCalibCoeffs = 	{ 
-													(float)0x00000000, (float)0x00000000, (float)0xFFFFFFDD,
-													(float)0x00000000, (float)0x00000000, (float)0x00000103
-												};
 
 #define swap(type, i, j) {type t = i; i = j; j = t;}
 
@@ -21,13 +17,13 @@ LUTouch::LUTouch(SPI &spi)
 	
 }
 
-void LUTouch::InitTouch(byte orientation, const CalibCoefficients calibCoeffs)
+void LUTouch::InitTouch(const TouchCalibCoefficients &calibCoeffs, byte orientation)
 {
 	orient				= orientation;
 	default_orientation	= LANDSCAPE;
 	prec				= 20;
-	memcpy(&coeffs, &calibCoeffs, sizeof(CalibCoefficients)); // raw HEX from memory
-	
+	//memcpy(&coeffs, &calibCoeffs, sizeof(TouchCalibCoefficients)); // raw HEX from memory
+	coeffs = calibCoeffs;
 	TP_IRQ_OUT_HIGH();
  	TP_CS_HIGH();
 }
@@ -141,7 +137,7 @@ bool LUTouch::dataAvailable()
     return avail;
 }
 
-void LUTouch::setCalibCoefficients(const CalibCoefficients calibCoeffs)
+void LUTouch::setCalibCoefficients(const TouchCalibCoefficients &calibCoeffs)
 {
 	coeffs = calibCoeffs;
 }
@@ -154,7 +150,7 @@ int16_t LUTouch::getX()
 	{
 		return -1;
 	}
-	x = coeffs.a_x * TP_X + coeffs.b_x * TP_Y + coeffs.d_x;
+	x = coeffs.calibCoeffs.a_x * TP_X + coeffs.calibCoeffs.b_x * TP_Y + coeffs.calibCoeffs.d_x;
 	return x;
 }
 
@@ -166,7 +162,7 @@ int16_t LUTouch::getY()
 	{
 		return -1;
 	}
-	y = coeffs.a_y * TP_X + coeffs.b_y * TP_Y + coeffs.d_y;
+	y = coeffs.calibCoeffs.a_y * TP_X + coeffs.calibCoeffs.b_y * TP_Y + coeffs.calibCoeffs.d_y;
 	return y;
 }
 

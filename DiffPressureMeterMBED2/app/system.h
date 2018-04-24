@@ -5,7 +5,6 @@
 #include <stdint.h>
 #include "hwconfig.h"
 
-
 #define DEVICE_VER "0.0.1"
 
 #define HIGH 1

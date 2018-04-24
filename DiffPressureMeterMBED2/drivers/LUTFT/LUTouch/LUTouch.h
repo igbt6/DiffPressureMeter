@@ -46,6 +46,7 @@ typedef struct {
 	uint16_t y;
 } TouchPoint;
 
+
 typedef struct
 {
 	float a_x;
@@ -56,7 +57,15 @@ typedef struct
   float d_y;
 } CalibCoefficients;
 
-extern const CalibCoefficients k_defaultCalibCoeffs;
+typedef struct
+{
+  union
+  {
+    CalibCoefficients calibCoeffs;
+    uint32_t calibCoeffsMemory[6];
+  };
+} TouchCalibCoefficients;
+
 
 class LUTouch
 {
@@ -65,10 +74,10 @@ public:
 		int16_t	TP_X ,TP_Y;
 
     LUTouch(SPI &spi);
-		void	InitTouch(byte orientation = LANDSCAPE, const CalibCoefficients calibCoeffs = k_defaultCalibCoeffs);
+		void	InitTouch(const TouchCalibCoefficients &calibCoeffs, byte orientation = LANDSCAPE);
 		bool	read();
 		bool	dataAvailable();
-    void  setCalibCoefficients(const CalibCoefficients coefs); 
+    void  setCalibCoefficients(const TouchCalibCoefficients &coefs); 
 		int16_t	getX();
 		int16_t	getY();
 		void	setPrecision(byte precision);
@@ -80,7 +89,7 @@ private:
     SPI &spi;
     DigitalInOut _irq_pin;
     DigitalOut _cs_pin;
-    CalibCoefficients coeffs;
+    TouchCalibCoefficients coeffs;
 		byte	orient;
     byte  default_orientation;
 		byte	prec;

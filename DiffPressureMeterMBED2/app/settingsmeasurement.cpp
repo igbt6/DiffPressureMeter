@@ -184,7 +184,7 @@ bool SettingsMeasurement::validateStartMeasurementDelayTime(word &seconds)
     // measurement start delay time
     if (seconds > 3599)
     {
-        seconds = 3599;
+        seconds = 0;
     }
 
     uint32_t min = seconds / 60;
@@ -215,7 +215,7 @@ bool SettingsMeasurement::validateMeasurementTime(word &seconds)
     // measurement time
     if (seconds > 3599)
     {
-        seconds = 3599;
+        seconds = 0;
     }
     uint32_t min = seconds / 60;
     uint32_t sec = seconds % 60;

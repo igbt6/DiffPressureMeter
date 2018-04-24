@@ -1,10 +1,11 @@
 #ifndef SETTINGSMEMORY_H
 #define SETTINGSMEMORY_H
 #include "system.h"
+#include "LUTouch.h" // for TouchCalibCoefficients
 
 struct SettingsFootprint
 {
-    uint32_t calibCoeffs[6];
+    TouchCalibCoefficients calibCoeffs;
     uint16_t measurementStartDelaySecs;
     uint16_t measurementTimeSecs;
 };
@@ -16,13 +17,14 @@ public:
     static SettingsMemory& instance();
     bool saveSettings(const SettingsFootprint &settings);
     bool readSettings(SettingsFootprint &settings);
+    void setDefaults();
     // returns copy of the app settings
     SettingsFootprint appSettings();
 
 private:
     SettingsMemory();
     SettingsMemory& operator=(const SettingsMemory& memory);
-    SettingsFootprint appSettings;
+    SettingsFootprint m_appSettings;
 };
 
 

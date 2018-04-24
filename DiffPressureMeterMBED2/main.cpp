@@ -1,3 +1,5 @@
+#if 0
+
 #include "system.h"
 #include "LUTft.h"
 #include "LUTouch.h"
@@ -7,6 +9,7 @@
 #include "interfaces.h"
 #include "settingsdatetime.h"
 #include "settingsmeasurement.h"
+#include "settingsmemory.h"
 
 using namespace rtctime;
 // LUTFT
@@ -45,9 +48,9 @@ int main()
     tft.InitLCD(LANDSCAPE);
     tft.setFont(SmallFont);
     //LUTFT::runDemo(tft, 20);
-    touch.InitTouch(tft.getOrientation());
-    LUTouchCalibration touchCalib(tft, touch);
-    touchCalib.calibrate();
+    touch.InitTouch(SettingsMemory::instance().appSettings().calibCoeffs, tft.getOrientation());
+    //LUTouchCalibration touchCalib(tft, touch);
+    //touchCalib.calibrate();
     //SettingsDateTime setDateTime(tft, touch);
     //setDateTime.setClock();
     SettingsMeasurement setMeasurement(tft, touch);
@@ -90,3 +93,13 @@ int main()
     }
 }
 
+#endif
+
+
+#include "mainapp.h"
+
+///////////////////////////////////////////////////////////////////////////////////////
+int main()
+{
+    MainApp::instance().run();   
+}

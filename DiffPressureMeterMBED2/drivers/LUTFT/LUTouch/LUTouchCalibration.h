@@ -15,7 +15,6 @@ class LUTouchCalibration
 public:
     LUTouchCalibration(LUTFT &tft, LUTouch &touch); 
     void setup();
-    void drawCrossHair(int x, int y);
     void readCoordinates();
     void waitForTouch();
     void toHex(uint32_t num);
@@ -26,11 +25,12 @@ public:
 
 private:
     void drawCalibrationPoint(word x, word y, word radius);   
+    void drawFrame(const char* txt);
 
 private:
     LUTFT &tft;
     LUTouch &touch;
-    CalibCoefficients coeffs;
+    TouchCalibCoefficients coeffs;
     uint32_t cx, cy;
     int dispx, dispy, text_y_center;
     char buf[11];

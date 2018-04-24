@@ -6,6 +6,7 @@
 
 
 #include "LUTouchCalibration.h"
+#include "settingsmemory.h"
 
 // Declare which fonts we will be using
 extern uint8_t SmallFont[];
@@ -23,17 +24,10 @@ void LUTouchCalibration::setup()
     tft.clrScr();
     tft.setFont(SmallFont);
 
-    touch.InitTouch(tft.getOrientation());
+    touch.InitTouch(SettingsMemory::instance().appSettings().calibCoeffs, tft.getOrientation());
     dispx=tft.getDisplayXSize();
     dispy=tft.getDisplayYSize();
     text_y_center=(dispy/2)-6;
-}
-
-void LUTouchCalibration::drawCrossHair(int x, int y)
-{
-    tft.drawRect(x-10, y-10, x+10, y+10);
-    tft.drawLine(x-5, y, x+5, y);
-    tft.drawLine(x, y-5, x, y+5);
 }
 
 void LUTouchCalibration::readCoordinates()
@@ -121,22 +115,17 @@ void LUTouchCalibration::startup()
     tft.print("LUTouch Calibration", CENTER, 1);
     tft.setBackColor(0, 0, 0);
 
-    tft.print("INSTRUCTIONS", CENTER, 30);
-    tft.print("Use a pen or something similar to", LEFT, 50);
-    tft.print("touch as close to the center of the", LEFT, 62);
-    tft.print("highlighted crosshair as possible. Keep", LEFT, 74);
-    tft.print("as still as possible and keep holding", LEFT, 86);
-    tft.print("until the highlight is removed. Repeat", LEFT, 98);
-    tft.print("for all crosshairs in sequence.", LEFT, 110);
+    tft.print("INSTRUKCJA", CENTER, 30);
+    tft.print("Uzyj dlugopisu lub olowka.", LEFT, 50);
+    tft.print("Naciskaj sam srodek okregu.", LEFT, 62);
+    tft.print("PRESS - nacisnij", LEFT, 74);
+    tft.print("HOLD! - trzymaj", LEFT, 86);
+    tft.print("RELEASE - pusc", LEFT, 98);
+    tft.print("Powtarzaj dla wszystkich punktow", LEFT, 110);
 
-    tft.print("Further instructions will be displayed", LEFT, 134);
-    tft.print("when the calibration is complete.", LEFT, 146);
+    tft.print("Dalsze instrukcje w dokumentacji : )", LEFT, 134);
 
-    tft.print("Do NOT use your finger as a calibration", LEFT, 170);
-    tft.print("a pen or the result WILL BE imprecise.", LEFT, 182);
-
-    tft.print("Touch screen to continue", CENTER, 226);
-
+    tft.print("Nacisnij zeby kontynuowac", CENTER, 226);
     waitForTouch();
     tft.clrScr();
 }
@@ -144,56 +133,44 @@ void LUTouchCalibration::startup()
 void LUTouchCalibration::done()
 {
     tft.clrScr();
-    tft.setColor(255, 0, 0);
-    tft.fillRect(0, 0, dispx-1, 13);
-    tft.setColor(255, 255, 255);
-    tft.setBackColor(255, 0, 0);
-    tft.drawLine(0, 14, dispx-1, 14);
-    tft.print("LUTouch Calibration", CENTER, 1);
-    tft.setBackColor(0, 0, 0);
+    drawFrame("LUTouch calibration");
     
-    tft.print("CALIBRATION COMPLETE", CENTER, 90);
-    tft.print("Settings will be saved to memory", CENTER, 120);
+    tft.print("Kalibracja zakonczona pomyslnie", CENTER, 40);
+    tft.print("Trwa zapis do pamieci... ", CENTER, 70);
 
+    tft.print("Nowe parametry wyswietlacza:", LEFT, 110);
+    tft.print("a_x", LEFT, 130);
+    tft.print("b_x", LEFT, 142);
+    tft.print("d_x", LEFT, 154);
+    tft.print("a_y", LEFT, 166);
+    tft.print("b_y", LEFT, 178);
+    tft.print("d_y", LEFT, 190);
 
-    tft.print("a_x", LEFT, 150);
-    tft.print("b_x", LEFT, 162);
-    tft.print("d_x", LEFT, 174);
-    tft.print("a_y", LEFT, 186);
-    tft.print("b_y", LEFT, 198);
-    tft.print("d_y", LEFT, 210);
-    toHex(coeffs.a_x);
-    tft.print(buf, 75, 150);
-    toHex(coeffs.b_x);
-    tft.print(buf, 75, 162);
-    toHex(coeffs.d_x);
-    tft.print(buf, 75, 174);
-    toHex(coeffs.a_y);
-    tft.print(buf, 75, 186);
-    toHex(coeffs.b_y);
-    tft.print(buf, 75, 198);
-    toHex(coeffs.d_y);
-    tft.print(buf, 75, 210);
+    toHex(coeffs.calibCoeffsMemory[0]);
+    tft.print(buf, 75, 130);
+    toHex(coeffs.calibCoeffsMemory[1]);
+    tft.print(buf, 75, 142);
+    toHex(coeffs.calibCoeffsMemory[2]);
+    tft.print(buf, 75, 154);
+    toHex(coeffs.calibCoeffsMemory[3]);
+    tft.print(buf, 75, 166);
+    toHex(coeffs.calibCoeffsMemory[4]);
+    tft.print(buf, 75, 178);
+    toHex(coeffs.calibCoeffsMemory[5]);
+    tft.print(buf, 75, 190);
 
-    waitForTouch();
     touch.setCalibCoefficients(coeffs);
+    tft.print("Nacisnij zeby kontynuowac", CENTER, 226);
+    waitForTouch();
     tft.clrScr();
 }
 
 void LUTouchCalibration::fail()
 {
     tft.clrScr();
-    tft.setColor(255, 0, 0);
-    tft.fillRect(0, 0, dispx-1, 13);
-    tft.setColor(255, 255, 255);
-    tft.setBackColor(255, 0, 0);
-    tft.drawLine(0, 14, dispx-1, 14);
-    tft.print("LUTouch Calibration FAILED", CENTER, 1);
-    tft.setBackColor(0, 0, 0);
-    
-    tft.print("Unable to read the position", LEFT, 30);
-    tft.print("of the press. This is", LEFT, 42);
-    tft.print("probably a hardware issue!", 88, 54);
+    drawFrame("LUTouch calibration failed");
+    tft.print("Uklad nie moze odczytac pozycji wskaznika", LEFT, 30);
+    tft.print("Hardware issue!!! :( ", 88, 54);
     while(true) {};
 }
 
@@ -202,6 +179,17 @@ void LUTouchCalibration::drawCalibrationPoint(word x, word y, word radius)
 {
 	tft.drawCircle(x, y, radius);
 	tft.fillCircle(x, y, radius - 20);
+}
+
+void LUTouchCalibration::drawFrame(const char* txt)
+{
+    tft.setColor(255, 0, 0);
+    tft.fillRect(0, 0, dispx-1, 13);
+    tft.setColor(255, 255, 255);
+    tft.setBackColor(255, 0, 0);
+    tft.drawLine(0, 14, dispx-1, 14);
+    tft.print(txt, CENTER, 1);
+    tft.setBackColor(0, 0, 0);
 }
 
 void LUTouchCalibration::calibrate()
@@ -231,7 +219,6 @@ void LUTouchCalibration::calibrate()
   t1.y = cy;
   tft.setColor(VGA_WHITE);
   tft.print("* RELEASE *", CENTER, text_y_center);
-  tft.setColor(VGA_GREEN);
   drawCalibrationPoint(p1.x, p1.y, 30);
   wait_ms(2000);
 
@@ -242,7 +229,6 @@ void LUTouchCalibration::calibrate()
   t2.y = cy;
   tft.setColor(VGA_WHITE);
   tft.print("* RELEASE *", CENTER, text_y_center);
-  tft.setColor(VGA_GREEN);
   drawCalibrationPoint(p2.x, p2.y, 30);
   wait_ms(2000);
 
@@ -253,7 +239,6 @@ void LUTouchCalibration::calibrate()
   t3.y = cy;
   tft.setColor(VGA_WHITE);
   tft.print("* RELEASE *", CENTER, text_y_center);
-  tft.setColor(VGA_GREEN);
   drawCalibrationPoint(p3.x, p3.y, 30);
   wait_ms(2000);
   //Formula based on:
@@ -288,13 +273,15 @@ void LUTouchCalibration::calibrate()
 						- (int32_t) t2.x * t1.y);
 
 	// final values
-	coeffs.a_x = (float) deltaX1 / (float) delta;
-	coeffs.b_x = (float) deltaX2 / (float) delta;
-	coeffs.d_x = (float) deltaX3 / (float) delta;
+	coeffs.calibCoeffs.a_x = (float) deltaX1 / (float) delta;
+	coeffs.calibCoeffs.b_x = (float) deltaX2 / (float) delta;
+	coeffs.calibCoeffs.d_x = (float) deltaX3 / (float) delta;
 
-	coeffs.a_y = (float) deltaY1 / (float) delta;
-	coeffs.b_y = (float) deltaY2 / (float) delta;
-	coeffs.d_y = (float) deltaY3 / (float) delta;
+	coeffs.calibCoeffs.a_y = (float) deltaY1 / (float) delta;
+	coeffs.calibCoeffs.b_y = (float) deltaY2 / (float) delta;
+	coeffs.calibCoeffs.d_y = (float) deltaY3 / (float) delta;
+
+  printf("%3.2f", coeffs.calibCoeffs.a_x);
 
   wait_ms(3000);
   // CHECK
@@ -306,8 +293,8 @@ void LUTouchCalibration::calibrate()
   tft.setColor(VGA_YELLOW);
   drawCalibrationPoint(testPoint.x, testPoint.y, 30);
   readCoordinates();
-	result.x = coeffs.a_x * cx + coeffs.b_x * cy + coeffs.d_x;
-	result.y = coeffs.a_y * cx + coeffs.b_y * cy + coeffs.d_y;
+	result.x = coeffs.calibCoeffs.a_x * cx + coeffs.calibCoeffs.b_x * cy + coeffs.calibCoeffs.d_x;
+	result.y = coeffs.calibCoeffs.a_y * cx + coeffs.calibCoeffs.b_y * cy + coeffs.calibCoeffs.d_y;
   tft.setColor(VGA_WHITE);
   tft.print("* RELEASE *", CENTER, text_y_center);
   wait_ms(500);
