@@ -36,7 +36,7 @@ UTFT_Buttons::UTFT_Buttons(LUTFT *ptrUTFT, LUTouch *ptrURTouch)
 	_font_symbol			= NULL;
 }
 
-int UTFT_Buttons::addButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *label, uint16_t flags)
+int UTFT_Buttons::addButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, const char *label, uint16_t flags)
 {
 	int btcnt = 0;
   
@@ -164,7 +164,7 @@ void UTFT_Buttons::disableButton(int buttonID, bool redraw)
 	}
 }
 
-void UTFT_Buttons::relabelButton(int buttonID, char *label, bool redraw)
+void UTFT_Buttons::relabelButton(int buttonID, const char *label, bool redraw)
 {
 	if (!(buttons[buttonID].flags & BUTTON_UNUSED))
 	{

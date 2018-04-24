@@ -21,6 +21,8 @@
 
 #include "LUTFT.h"
 
+#define swap(type, i, j) {type t = i; i = j; j = t;}
+
 LUTFT::LUTFT(SPI &spi)
     : spi(spi)
     , LCD_CS_OUT()

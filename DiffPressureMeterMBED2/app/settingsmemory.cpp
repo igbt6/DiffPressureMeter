@@ -1,5 +1,6 @@
 #include "settingsmemory.h"
 
+#define EEPROM_ADDR 0x07   // I2c EEPROM address is 0xAE
 //-----------------------------------------------------------------------------
 SettingsMemory& SettingsMemory::instance()
 {
@@ -9,9 +10,11 @@ SettingsMemory& SettingsMemory::instance()
 //-----------------------------------------------------------------------------
 
 SettingsMemory::SettingsMemory()
+    : eeprom(DS3231_I2C_SDA_PIN, DS3231_I2C_SCL_PIN, EEPROM_ADDR)
 {
     setDefaults();
     readSettings(m_appSettings);
+    testEeprom(eeprom);
 }
 //-----------------------------------------------------------------------------
 bool SettingsMemory::saveSettings(const SettingsFootprint &settings)
@@ -46,3 +49,16 @@ SettingsFootprint SettingsMemory::appSettings()
 {
     return m_appSettings;
 }
+
+
+//-----------------------------------------------------------------------------
+void SettingsMemory::testEeprom(EEPROM &ep)
+{
+    ep.Write(128, (unsigned char)0xaa);
+    uint8_t value = 0;
+    ep.Read(128, &value);
+    DEBUG("VALUE read from 128 addr: 0x%x", value);
+    ep.DumpMemoryArea(0, 30);
+}
+
+//-----------------------------------------------------------------------------

@@ -158,7 +158,7 @@ int MainApp::settingsMenu()
     butDateTime = buttons.addButton( 10,  60, 300,  30, "Ustawienia czasu");
     butMeasurement = buttons.addButton( 10, 100, 300,  30, "Ustawienia pomiaru");
     butOther = buttons.addButton( 10, 140, 300,  30, "Inne");
-    butBack = buttons.addButton(  0, 199, 100,  40, "I", BUTTON_SYMBOL);
+    butBack = buttons.addButton(  0, 199, 100,  40, "<-");
 
 clean:    
     tft.clrScr();

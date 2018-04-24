@@ -44,7 +44,7 @@ typedef struct
 {
   uint16_t			pos_x, pos_y, width, height;
   uint16_t			flags;
-  char				*label;
+  const char				*label;
   bitmapdatatype	data;
 } button_type;
 
@@ -53,13 +53,13 @@ class UTFT_Buttons
 	public:
 		UTFT_Buttons(LUTFT *ptrUTFT, LUTouch *ptrURTouch);
 
-		int		addButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *label, uint16_t flags=0);
+		int		addButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, const char *label, uint16_t flags=0);
 		int		addButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, bitmapdatatype data, uint16_t flags=0);
 		void	drawButtons();
 		void	drawButton(int buttonID);
 		void	enableButton(int buttonID, bool redraw=false);
 		void	disableButton(int buttonID, bool redraw=false);
-		void	relabelButton(int buttonID, char *label, bool redraw=false);
+		void	relabelButton(int buttonID, const char *label, bool redraw=false);
 		bool	buttonEnabled(int buttonID);
 		void	deleteButton(int buttonID);
 		void	deleteAllButtons();

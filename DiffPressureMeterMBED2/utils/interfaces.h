@@ -37,6 +37,19 @@ private:
 	SPI spi;
 };
 
+
+// I2C_1
+class I2C__1 : public HwInterface<I2C>
+{
+public:
+    I2C__1();
+    I2C& handle();
+private:
+    static const PinName sda = DS3231_I2C_SDA_PIN;
+    static const PinName scl = DS3231_I2C_SCL_PIN;
+	I2C i2c;
+};
+
 ///// Hardware Interface class //////
 template <class I>
 struct HwInterfaceType { typedef I type; };
@@ -47,24 +60,29 @@ class HwInterfaces
 public:
     static HwInterfaces& instance();    
     template<typename I> typename HwInterfaceType<I>::type& getHwInterface();
+    // template<> typename HwInterfaceType<I2C__1>::type& getHwInterface(); //TODO
 private:
     HwInterfaces();
     // defined hw interfaces 
-    SPI__1 spi;
+    SPI__1 spi1;
+    I2C__1 i2c1;
 
 };
-
 
 //-----------------------------------------------------------------------------
 template<typename I> typename HwInterfaceType<I>::type& HwInterfaces::getHwInterface()
 {
-  if (is_same<I,SPI__1>::value)
+  if (is_same<I, SPI__1>::value)
   {
-    return spi;
+    return spi1;
+  }
+  //else if (is_same<I, I2C__1>::value)
+  {
+    //return i2c1;
   }
 }
 
-
+//-----------------------------------------------------------------------------
 
 
 #endif

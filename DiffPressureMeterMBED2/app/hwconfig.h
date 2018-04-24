@@ -18,7 +18,7 @@
 // DS3231 - RTC 
 #define DS3231_I2C_SDA_PIN      PB_9 //I2C1_SDA
 #define DS3231_I2C_SCL_PIN      PB_8 //I2C1_SCL
-#define DS3231_SQW_PIN          PC_8     
+#define DS3231_SQW_PIN          PC_8 // NOT USED   
 
 // ADS1115 - 16BIT ADC 
 #define ADS1115_I2C_SDA_PIN     PB_3 //I2C2_SDA TODO
