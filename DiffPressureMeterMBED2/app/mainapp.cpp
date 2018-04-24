@@ -10,6 +10,8 @@ extern uint8_t SmallFont[];
 extern uint8_t BigFont[];
 extern uint8_t SevenSegNumFont[];
 extern uint8_t Dingbats1_XL[];
+extern uint8_t arial_bold[];
+extern uint8_t Retro8x16[];
 
 //-----------------------------------------------------------------------------
 MainApp &MainApp::instance()
@@ -113,7 +115,7 @@ int MainApp::mainMenu()
     buttons.setButtonColors(VGA_WHITE, VGA_GRAY, VGA_WHITE, VGA_RED, VGA_BLUE);
     
     butStartMeasurement = buttons.addButton( 10, 80, 300,  80, "Rozpocznij pomiar");
-    butSettings = buttons.addButton(239, 199,  80,  40, "e", BUTTON_SYMBOL);
+    butSettings = buttons.addButton(239, 199,  80,  40, "a", BUTTON_SYMBOL);
     buttons.drawButtons();
 
     while(1) 
@@ -213,9 +215,10 @@ void MainApp::updateTime()
         }
         else
         {
+            tft.setFont(arial_bold);
             tft.setColor(VGA_WHITE);
             tft.setBackColor(VGA_BLUE);
-            tft.print(ExternalRTC::getTimeDateString(currentTime), CENTER, 5);
+            tft.print(ExternalRTC::getTimeDateString(currentTime), CENTER, 4);
         }
     }
 }

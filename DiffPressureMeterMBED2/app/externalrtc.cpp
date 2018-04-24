@@ -159,11 +159,11 @@ char *ExternalRTC::getTimeDateString(const Time& time)
     const int timeStrLen = 8;
     const int dateStrLen = 10;
     memcpy(strTimeDate, getTimeString(time), timeStrLen);
-    memcpy(&strTimeDate[timeStrLen+5], getDateString(time), dateStrLen);
+    memcpy(&strTimeDate[timeStrLen+2], getDateString(time), dateStrLen);
     // remove nulls
     for (int i = 0; i < 30; ++i)
     {
-        if ( i < 24 && strTimeDate[i] == '\0')
+        if ( i < 20 && strTimeDate[i] == '\0')
         {
             strTimeDate[i] = ' ';
         }   
