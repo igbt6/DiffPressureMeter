@@ -22,7 +22,6 @@ void LUTouch::InitTouch(const TouchCalibCoefficients &calibCoeffs, byte orientat
 	orient				= orientation;
 	default_orientation	= LANDSCAPE;
 	prec				= 20;
-	//memcpy(&coeffs, &calibCoeffs, sizeof(TouchCalibCoefficients)); // raw HEX from memory
 	coeffs = calibCoeffs;
 	TP_IRQ_OUT_HIGH();
  	TP_CS_HIGH();

@@ -7,7 +7,7 @@ SPI__1::SPI__1()
     : spi(SPI__1::mosi, SPI__1::miso, SPI__1::sclk)
 {
     spi.format(8,3);
-    spi.frequency(10000000); // 1MHz clock
+    spi.frequency(12000000); // 40MHz clock
 }
 
 //-----------------------------------------------------------------------------

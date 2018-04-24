@@ -24,9 +24,8 @@ public:
         sIntro        = -1,
         sMainMenu     =  0,
         sMeasurement  =  1,
-        sSettingsTime =  2,
-        sSettingsMeas =  3,
-        sInfo         =  4,
+        sSettings     =  2,
+        sInfo         =  3,
     };
 
     static MainApp& instance();
@@ -35,7 +34,10 @@ public:
 private:
   MainApp();
   MainApp & operator=(const MainApp& rtc);
-  void mainMenu();
+  int mainMenu();
+  int settingsMenu();
+  void drawFrame(const char* txt);
+  void updateTime();
 
 private:
     LUTFT tft;

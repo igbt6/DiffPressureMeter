@@ -1,12 +1,14 @@
 #include "mainapp.h"
 
 #include "UTFT_Buttons.h"
+#include "TFT_Extension.h"
 //-----------------------------------------------------------------------------
 using namespace rtctime;
 
 // fonts for linker
 extern uint8_t SmallFont[];
 extern uint8_t BigFont[];
+extern uint8_t SevenSegNumFont[];
 extern uint8_t Dingbats1_XL[];
 
 //-----------------------------------------------------------------------------
@@ -28,6 +30,7 @@ MainApp::MainApp()
     tft.InitLCD(LANDSCAPE);
     touch.InitTouch(SettingsMemory::instance().appSettings().calibCoeffs, tft.getOrientation());
     printf("--- Hello! System here is living! ---");
+    millisStart();
 }
 
 //-----------------------------------------------------------------------------
@@ -43,19 +46,26 @@ void MainApp::run()
             }
             case sMainMenu:
             {
-                mainMenu();
+                int res = mainMenu();
+                if (res == 1)
+                {
+                    printf("Measurement started ...");
+                    currentState = sMeasurement;
+                }
+                else
+                {
+                    currentState = sSettings;   
+                }
                 break;
             }
             case sMeasurement:
             {
                 break;
             }
-            case sSettingsTime:
+            case sSettings:
             {
-                break;
-            }
-            case sSettingsMeas:
-            {
+                settingsMenu();
+                currentState = sMainMenu;
                 break;
             }
             case sInfo:
@@ -70,10 +80,24 @@ void MainApp::run()
 }
 
 //-----------------------------------------------------------------------------
-void MainApp::mainMenu()
+int MainApp::mainMenu()
 {
+    // KEYBOARD DEMO
+    /*
+    TFT_Extension tftExt(&tft, &touch);
+    tftExt.ExtSetup();
+    tftExt.SetupMobileKB(0,150); //NEEDED TO WORK!
+    while(1)
+    {
+        tftExt.ReceiveMsg(0,0,YELLOW); // X,Y(position on screen), Color
+        char* msg = tftExt.Mobile_KeyBoard(BLUE);
+        if(msg != NULL)
+            tft.print(msg,0,50);
+    }
+    */
+    Ticker updateTime;
+    updateTime.attach(this, &MainApp::updateTime, 1); // every 1 second
     UTFT_Buttons  buttons(&tft, &touch);
-
     tft.clrScr();
     tft.setFont(SmallFont);
 
@@ -82,74 +106,113 @@ void MainApp::mainMenu()
     buttons.setTextFont(BigFont);
     buttons.setSymbolFont(Dingbats1_XL);
 
-    int but1, but2, but3, but4, butX, butY, pressed_button;
-    bool default_colors = true;
+    int butStartMeasurement, butSettings, pressed_button;
+    buttons.setButtonColors(VGA_WHITE, VGA_GRAY, VGA_WHITE, VGA_RED, VGA_BLUE);
     
-    but1 = buttons.addButton( 10,  20, 300,  30, "Button 1");
-    but2 = buttons.addButton( 10,  60, 300,  30, "Button 2");
-    but3 = buttons.addButton( 10, 100, 300,  30, "Button 3");
-    but4 = buttons.addButton( 10, 140, 300,  30, "Button 4", BUTTON_DISABLED);
-    butX = buttons.addButton(279, 199,  40,  40, "a", BUTTON_SYMBOL);
-    butY = buttons.addButton(  0, 199, 100,  40, "I", BUTTON_SYMBOL | BUTTON_SYMBOL_REP_3X);
+    butStartMeasurement = buttons.addButton( 10, 80, 300,  80, "Rozpocznij pomiar");
+    butSettings = buttons.addButton(239, 199,  80,  40, "e", BUTTON_SYMBOL);
     buttons.drawButtons();
-
-    tft.print("You pressed:", 110, 205);
-    tft.setColor(VGA_BLACK);
-    tft.setBackColor(VGA_WHITE);
-    tft.print("None    ", 110, 220);
 
     while(1) 
     {
         if (touch.dataAvailable() == true)
         {
-        pressed_button = buttons.checkButtons();
+            pressed_button = buttons.checkButtons();
+            if (pressed_button == butStartMeasurement)
+            {
+                return 1;
+            }
+            if (pressed_button == butSettings)
+            {
+                return 2;
+            }
+        }
+    }
+    return 0;  
+}
 
-        if (pressed_button==butX)
+//-----------------------------------------------------------------------------
+int MainApp::settingsMenu()
+{
+    UTFT_Buttons  buttons(&tft, &touch);
+    tft.setFont(SmallFont);
+    touch.setPrecision(PREC_MEDIUM);
+    buttons.setTextFont(BigFont);
+    buttons.setSymbolFont(Dingbats1_XL);
+
+    int butDateTime, butMeasurement, butOther, butBack, pressed_button;
+    buttons.setButtonColors(VGA_WHITE, VGA_GRAY, VGA_WHITE, VGA_RED, VGA_BLUE);
+
+    butDateTime = buttons.addButton( 10,  60, 300,  30, "Ustawienia czasu");
+    butMeasurement = buttons.addButton( 10, 100, 300,  30, "Ustawienia pomiaru");
+    butOther = buttons.addButton( 10, 140, 300,  30, "Inne");
+    butBack = buttons.addButton(  0, 199, 100,  40, "i", BUTTON_SYMBOL);
+
+clean:    
+    tft.clrScr();
+    buttons.drawButtons();
+
+    while(1) 
+    {
+        if (touch.dataAvailable() == true)
         {
-            if (buttons.buttonEnabled(but4))
-            buttons.disableButton(but4, true);
-            else
-            buttons.enableButton(but4, true);
-        }
-        else if (pressed_button==butY)
-        {
-            if (default_colors)
+            pressed_button = buttons.checkButtons();
+            if (pressed_button == butDateTime)
             {
-            buttons.setButtonColors(VGA_YELLOW, VGA_RED, VGA_YELLOW, VGA_BLUE, VGA_GRAY);
-            buttons.relabelButton(butY, "_");
-            buttons.drawButtons();
-            default_colors=false;
+                settingsDateTime.setDateTime();
+                goto clean;
             }
-            else
+            else if (pressed_button == butMeasurement)
             {
-            buttons.setButtonColors(VGA_WHITE, VGA_GRAY, VGA_WHITE, VGA_RED, VGA_BLUE);
-            buttons.relabelButton(butY, "I");
-            buttons.drawButtons();
-            default_colors=true;
+                settingsMeasurement.setMeasurement();
+                goto clean;
+            }
+            else if (pressed_button == butOther)
+            {
+                goto clean;
+            }
+            else if (pressed_button == butBack)
+            {
+                return 0;
             }
         }
-        if (pressed_button==but1)
-            tft.print("Button 1", 110, 220);
-        if (pressed_button==but2)
-            tft.print("Button 2", 110, 220);
-        if (pressed_button==but3)
-            tft.print("Button 3", 110, 220);
-        if (pressed_button==but4)
-        {
-            tft.print("Button 4", 110, 220);
-            break;
-        }
-        if (pressed_button==-1)
-            tft.print("None    ", 110, 220);
-        }
-    }   
+    }
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+void MainApp::drawFrame(const char* txt)
+{
+    tft.setColor(VGA_BLUE);
+    tft.fillRect(0, 0, tft.getDisplayXSize()-1, 20);
+    tft.setColor(VGA_WHITE);
+    tft.setBackColor(VGA_BLUE);
+    tft.drawLine(0, 21, tft.getDisplayXSize()-1, 21);
+    tft.print(txt, CENTER, 1);
+    tft.setBackColor(VGA_BLACK);
 }
 //-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-
+void MainApp::updateTime()
+{
+    if (currentState == sMainMenu)
+    {
+        Time currentTime;
+        if (ExternalRTC::instance().getTime(currentTime))
+        {
+            printf("\r getTime ERROR occured !\t\n");
+            drawFrame("----------------"); 
+        }
+        else
+        {
+            printf("\rCurrent time: %s,  %s, %s, %s\t\n",
+                    ExternalRTC::getDateString(currentTime),       
+                    ExternalRTC::getTimeString(currentTime),
+                    ExternalRTC::getDayOfWeekString(currentTime),
+                    ExternalRTC::getMonthString(currentTime));         
+            drawFrame(ExternalRTC::getTimeDateString(currentTime));
+        }
+    }
+}
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------

@@ -52,7 +52,7 @@ int main()
     //LUTouchCalibration touchCalib(tft, touch);
     //touchCalib.calibrate();
     //SettingsDateTime setDateTime(tft, touch);
-    //setDateTime.setClock();
+    //setDateTime.setDateTime();
     SettingsMeasurement setMeasurement(tft, touch);
     setMeasurement.setMeasurement();
     LUTouch::runDemo(tft, touch, 3600);

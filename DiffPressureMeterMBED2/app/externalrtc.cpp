@@ -153,6 +153,16 @@ char *ExternalRTC::getDateString(const rtctime::Time& time)
 }
 
 //-----------------------------------------------------------------------------
+char *ExternalRTC::getTimeDateString(const Time& time)
+{
+    static char strTimeDate[] = "xxxxxxxxxxxxxxxxxxx";
+    const int timeStrLen = 8;
+    const int dateStrLen = 10;
+    memcpy(strTimeDate, getTimeString(time), timeStrLen);
+    memcpy(&strTimeDate[timeStrLen], getDateString(time), dateStrLen);
+}
+
+//-----------------------------------------------------------------------------
 const char *ExternalRTC::getDayOfWeekString(const rtctime::Time& time)
 {
 	static const char *days[]  = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};

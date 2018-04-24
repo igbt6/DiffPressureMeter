@@ -27,6 +27,7 @@ public:
     float getTemperature();
     static char *getTimeString(const Time& time);
     static char *getDateString(const Time& time);
+    static char *getTimeDateString(const Time& time);
     static const char *getDayOfWeekString(const Time& time);
     static const char *getMonthString(const Time& time);
 private:

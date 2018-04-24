@@ -8,7 +8,7 @@ class SettingsDateTime : public SettingsHelper
 
 public:
     SettingsDateTime(LUTFT &tft, LUTouch &touch);
-    void setClock();
+    void setDateTime();
     
 private:
     void showDOW(byte dow);

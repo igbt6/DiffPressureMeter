@@ -16,7 +16,7 @@ SettingsDateTime::SettingsDateTime(LUTFT &tft, LUTouch &touch)
 }
 
 //-----------------------------------------------------------------------------
-void SettingsDateTime::setClock()
+void SettingsDateTime::setDateTime()
 {
   Time t_temp;
   int x, y;
@@ -35,13 +35,15 @@ void SettingsDateTime::setClock()
   drawCancelButton();
   
   // Draw frames
-  tft.setColor(0, 0, 255);
+  tft.setColor(VGA_BLUE);
   tft.drawRoundRect(0, 0, 319, 96);
   tft.drawRoundRect(0, 100, 319, 196);
-  tft.print("Time:", 10, 40);
+
+  tft.setColor(VGA_WHITE);
+  tft.print("Czas:", 10, 40);
   tft.print(":", 154, 40);
   tft.print(":", 202, 40);
-  tft.print("Date:", 10, 140);
+  tft.print("Data:", 10, 140);
   tft.print(".", 154, 140);
   tft.print(".", 202, 140);
   
@@ -59,8 +61,8 @@ void SettingsDateTime::setClock()
   drawDownButton(170, 161);
   drawDownButton(234, 161);
   
-  // Print current time and date
-  tft.setColor(255, 255, 255);
+  // getcurrent time and date
+  tft.setColor(VGA_WHITE);
   if (ExternalRTC::instance().getTime(t_temp))
   {
     // defaults

@@ -35,12 +35,14 @@ void SettingsMeasurement::setMeasurement()
     drawCancelButton();
     
     // Draw frames
-    tft.setColor(0, 0, 255);
+    tft.setColor(VGA_BLUE);
     tft.drawRoundRect(0, 0, 319, 96);
     tft.drawRoundRect(0, 100, 319, 196);
     tft.setFont(SmallFont);
-    tft.print("Meas start delay:", 10, 40);
-    tft.print("Meas time:", 10, 140);
+    tft.setColor(VGA_WHITE);
+    tft.print("Opoznienie startu", 10, 40);
+    tft.print("pomiaru:", 10, 52);
+    tft.print("Czas pomiaru:", 10, 140);
 
     tft.setFont(BigFont);
     tft.print(":", 230, 40);
@@ -58,16 +60,9 @@ void SettingsMeasurement::setMeasurement()
     drawDownButton(180, 160);
     drawDownButton(260, 160);
     
-    // Print current times
-    tft.setColor(255, 255, 255);
-    SettingsFootprint settings;
-    if (!SettingsMemory::instance().readSettings(settings))
-    {
-        // defaults
-        settings.measurementStartDelaySecs = 0;
-        settings.measurementTimeSecs = 0;
-        printf("\r Get current settings from memory error occured!\t\n");  
-    }
+    // get current time
+    tft.setColor(VGA_WHITE);
+    SettingsFootprint settings = SettingsMemory::instance().appSettings();
     
     validateStartMeasurementDelayTime(settings.measurementStartDelaySecs);
     validateMeasurementTime(settings.measurementTimeSecs);
