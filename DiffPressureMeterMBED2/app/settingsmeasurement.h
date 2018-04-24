@@ -11,8 +11,8 @@ public:
     void setMeasurement();
     
 private:
-    static bool validateStartMeasurementTime(word seconds);
-    static bool validateMeasurementTime(word seconds);
+    bool validateStartMeasurementDelayTime(word &seconds);
+    bool validateMeasurementTime(word &seconds);
 
 private:
     LUTFT   &tft;

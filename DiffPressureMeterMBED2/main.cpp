@@ -47,7 +47,7 @@ int main()
     //LUTFT::runDemo(tft, 20);
     touch.InitTouch(tft.getOrientation());
     LUTouchCalibration touchCalib(tft, touch);
-    //touchCalib.calibrate();
+    touchCalib.calibrate();
     //SettingsDateTime setDateTime(tft, touch);
     //setDateTime.setClock();
     SettingsMeasurement setMeasurement(tft, touch);
