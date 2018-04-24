@@ -16,10 +16,13 @@ public:
     static SettingsMemory& instance();
     bool saveSettings(const SettingsFootprint &settings);
     bool readSettings(SettingsFootprint &settings);
+    // returns copy of the app settings
+    SettingsFootprint appSettings();
 
 private:
     SettingsMemory();
     SettingsMemory& operator=(const SettingsMemory& memory);
+    SettingsFootprint appSettings;
 };
 
 

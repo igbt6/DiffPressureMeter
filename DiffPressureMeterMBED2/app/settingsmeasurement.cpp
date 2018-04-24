@@ -237,4 +237,5 @@ bool SettingsMeasurement::validateMeasurementTime(word &seconds)
     {
         tft.printNumI(sec, 260, 140);  
     }
+    return true;
 }

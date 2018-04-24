@@ -1,6 +1,16 @@
 #include "settingsmemory.h"
 
 
+static const SettingsFootprint kDefaultAppSettings =
+{
+    calibCoeffs = 
+    {
+
+    }
+    measurementStartDelaySecs = 5;
+    measurementTimeSecs = 10;
+}
+
 //-----------------------------------------------------------------------------
 SettingsMemory& SettingsMemory::instance()
 {
@@ -10,8 +20,9 @@ SettingsMemory& SettingsMemory::instance()
 //-----------------------------------------------------------------------------
 
 SettingsMemory::SettingsMemory()
+    : appSettings(kDefaultAppSettings)
 {
-
+    readSettings(appSettings));
 }
 //-----------------------------------------------------------------------------
 bool SettingsMemory::saveSettings(const SettingsFootprint &settings)
@@ -26,4 +37,7 @@ bool SettingsMemory::readSettings(SettingsFootprint &settings)
 }
 
 //-----------------------------------------------------------------------------
-
+SettingsFootprint SettingsMemory::appSettings()
+{
+    return appSettings;
+}
