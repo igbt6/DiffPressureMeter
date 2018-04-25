@@ -324,3 +324,37 @@ int16_t ADS1015::getLastConversionResults()
         return (int16_t)res;
     }
 }
+
+/**************************************************************************/
+/*!
+    @brief  Return value of milivots per bit depending on chosen GAIN factor
+    (m_gain)
+*/
+/**************************************************************************/
+float ADS1015::getMiliVoltPerBit()
+{
+    float miliVoltsPerBit = 0;
+    switch(m_gain)
+    {
+        case GAIN_TWOTHIRDS:
+            miliVoltsPerBit = GAIN_TWOTHIRDS_MV_PER_BIT;
+            break;
+        case GAIN_ONE:
+            miliVoltsPerBit = GAIN_ONE_MV_PER_BIT;
+            break;          
+        case GAIN_TWO:
+            miliVoltsPerBit = GAIN_TWOTHIRDS_MV_PER_BIT;
+            break;          
+        case GAIN_FOUR:
+            miliVoltsPerBit = GAIN_FOUR_MV_PER_BIT;
+            break;         
+        case GAIN_EIGHT:
+            miliVoltsPerBit = GAIN_EIGHT_MV_PER_BIT;
+            break;        
+        case GAIN_SIXTEEN:
+        default:
+            miliVoltsPerBit = GAIN_SIXTEEN_MV_PER_BIT;
+            break;
+    }
+    return miliVoltsPerBit; 
+}

@@ -21,7 +21,10 @@
 
 #include "24LCxx_I2C.h"
 
+#undef __DEBUG
+
 namespace _24LCXX_I2C {
+
 
     unsigned char C24LCXX_I2C::I2CModuleRefCounter = 0;
 
@@ -260,7 +263,7 @@ namespace _24LCXX_I2C {
             int result = _i2cInstance->read(_slaveAddress, (char *)p_byte, 1);
             wait(0.02);
     
-            DEBUG_LEAVE("C24LCXX_I2C::Read (byte): %x", (bool)(result == 0))
+            DEBUG_LEAVE("C24LCXX_I2C::Read (byte): %x %x", (bool)(result == 0), *p_byte)
             return (bool)(result == 0);
         }
     

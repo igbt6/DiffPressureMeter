@@ -11,7 +11,6 @@ extern uint8_t BigFont[];
 extern uint8_t SevenSegNumFont[];
 extern uint8_t Dingbats1_XL[];
 extern uint8_t arial_bold[];
-extern uint8_t Retro8x16[];
 
 //-----------------------------------------------------------------------------
 MainApp &MainApp::instance()
@@ -32,7 +31,7 @@ MainApp::MainApp()
 {
     tft.InitLCD(LANDSCAPE);
     touch.InitTouch(SettingsMemory::instance().appSettings().calibCoeffs, tft.getOrientation());
-    printf("--- Hello! System here is living! ---");
+    DEBUG("--- Hello! System here is living! ---");
     millisStart();
 }
 
@@ -52,7 +51,7 @@ void MainApp::run()
                 int res = mainMenu();
                 if (res == 1)
                 {
-                    printf("Measurement started ...");
+                    DEBUG("Measurement started ...");
                     currentState = sMeasurement;
                 }
                 else
@@ -63,6 +62,8 @@ void MainApp::run()
             }
             case sMeasurement:
             {
+                measurement.run();
+                currentState = sMainMenu;
                 break;
             }
             case sSettings:
@@ -210,7 +211,7 @@ void MainApp::updateTime()
         Time currentTime;
         if (ExternalRTC::instance().getTime(currentTime))
         {
-            printf("\r getTime ERROR occured !\t\n");
+            DEBUG_ERROR("updateTime - getTime ERROR occured !");
             tft.print("----------------", CENTER, 5);
         }
         else

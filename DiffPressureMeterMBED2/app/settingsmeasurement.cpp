@@ -168,7 +168,7 @@ void SettingsMeasurement::setMeasurement()
     {
         if (measTimeChanged or measStartDelayTimeChanged)
         {
-            printf("Measurement setting will be saved here...");
+            DEBUG("Measurement setting will be saved here...");
             SettingsMemory::instance().saveSettings(settings);
         }
     }

@@ -54,11 +54,17 @@ SettingsFootprint SettingsMemory::appSettings()
 //-----------------------------------------------------------------------------
 void SettingsMemory::testEeprom(EEPROM &ep)
 {
-    ep.Write(128, (unsigned char)0xaa);
-    uint8_t value = 0;
-    ep.Read(128, &value);
-    DEBUG("VALUE read from 128 addr: 0x%x", value);
-    ep.DumpMemoryArea(0, 30);
+    ep.Write(3, (unsigned char)0xac);
+    uint8_t value = 0xcc;
+    if (ep.Read(3, &value))
+    {
+        DEBUG("VALUE read from addr 128: 0x%x", value);
+    }
+    else
+    {
+        DEBUG_ERROR("VALUE read from addr 128 failed!");
+    }
+    //ep.DumpMemoryArea(0, 30);
 }
 
 //-----------------------------------------------------------------------------

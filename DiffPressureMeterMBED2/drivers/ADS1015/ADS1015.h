@@ -130,6 +130,16 @@ int main() {
     #define ADS1015_REG_CONFIG_CQUE_NONE    (0x0003)  // Disable the comparator and put ALERT/RDY in high state (default)
 /*=========================================================================*/
 
+/*=========================================================================
+    MILIVOLTS PER BIT
+    -----------------------------------------------------------------------*/
+    #define GAIN_TWOTHIRDS_MV_PER_BIT    (float)6144/0x7FFF
+    #define GAIN_ONE_MV_PER_BIT          (float)4096/0x7FFF
+    #define GAIN_TWO_MV_PER_BIT          (float)2048/0x7FFF
+    #define GAIN_FOUR_MV_PER_BIT         (float)1024/0x7FFF
+    #define GAIN_EIGHT_MV_PER_BIT         (float)512/0x7FFF
+    #define GAIN_SIXTEEN_MV_PER_BIT       (float)256/0x7FFF
+/*=========================================================================*/
 typedef enum {
     GAIN_TWOTHIRDS    = ADS1015_REG_CONFIG_PGA_6_144V,
     GAIN_ONE          = ADS1015_REG_CONFIG_PGA_4_096V,
@@ -138,6 +148,8 @@ typedef enum {
     GAIN_EIGHT        = ADS1015_REG_CONFIG_PGA_0_512V,
     GAIN_SIXTEEN      = ADS1015_REG_CONFIG_PGA_0_256V
 } adsGain_t;
+
+
 
 class ADS1015
 {
@@ -160,6 +172,7 @@ public:
     int16_t   getLastConversionResults();
     void      setGain(adsGain_t gain);
     adsGain_t getGain(void);
+    float     getMiliVoltPerBit();
 
 private:
     uint16_t readRegister(uint8_t i2cAddress, uint8_t reg);

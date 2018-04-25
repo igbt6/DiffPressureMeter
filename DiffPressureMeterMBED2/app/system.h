@@ -1,9 +1,11 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
-#include "mbed.h"
 #include <stdint.h>
+
+#include "mbed.h"
 #include "hwconfig.h"
+#include "Debug.h"
 
 #define DEVICE_VER "0.0.1"
 

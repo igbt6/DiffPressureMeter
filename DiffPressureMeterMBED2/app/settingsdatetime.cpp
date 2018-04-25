@@ -463,11 +463,11 @@ void SettingsDateTime::setDateTime()
         {
             if (!ExternalRTC::instance().setTime(t_temp))
             {
-                printf("\r[SettingsDateTime] RTC time modified !\t\n");
+                DEBUG("[SettingsDateTime] RTC time modified !");
             }
             else
             {
-                printf("\r[SettingsDateTime] RTC seTime error occured !\t\n");
+                DEBUG_ERROR("[SettingsDateTime] RTC seTime error occured !");
             }
         }
     }  

@@ -24,7 +24,7 @@ public:
     SettingsFootprint appSettings();
 
     // eeprom tests
-    static void testEeprom(C24LCXX_I2C &ep);
+    static void testEeprom(EEPROM &ep);
 
 private:
     SettingsMemory();

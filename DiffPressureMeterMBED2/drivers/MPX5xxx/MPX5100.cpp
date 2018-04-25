@@ -1,19 +1,14 @@
 /*
-** Driver for the Freescale MPX5xxx family of pressure sensors.
-**
-** Tested on:
-** - MPX5010 (10 kPa)
-** - MPX5100 (100 kPa)
-** - MPX5700 (700 kPa)
+** Driver for the Freescale MPX5100 pressure sensor.
+** MPX5100 (100 kPa)
 */
 
-#include "MPX5xxx.h"
+#include "MPX5100.h"
 
-MPX5xxx::MPX5xxx(MPX5xxxDevType devType, ADS1015 &adc)
+MPX5100::MPX5100(ADS1015 &adc)
   : m_adc(adc)
 {
-  m_devType = devType;
-  m_refVolts = 5.0; //ADC ADS1115
+  m_refVolts = supplyVoltage();
 }
 
 
@@ -22,7 +17,7 @@ MPX5xxx::MPX5xxx(MPX5xxxDevType devType, ADS1015 &adc)
 ** or if called with no value, should it return the offset?
 */
 
-void MPX5xxx::calibrate(float counts)
+void MPX5100::calibrate(float counts)
 {
   m_Voffset = (counts * m_refVolts) / A2D_FULL_SCALE;
 }
@@ -33,7 +28,7 @@ void MPX5xxx::calibrate(float counts)
 ** Return the new offset.
 */
 
-float MPX5xxx::autoCalibrate()
+float MPX5100::autoCalibrate()
 {
 }
 
@@ -42,31 +37,32 @@ float MPX5xxx::autoCalibrate()
 **
 ** Transfer functions (from datasheets):
 **
-** MPX5010: Vout = Vs * (0.0900000 * P + 0.04) +/- Error (5.0% Vfss)
 ** MPX5100: Vout = Vs * (0.0090000 * P + 0.04) +/- Error (Perror * Temp Factor * 0.009 * Vs)
-** MPX5700: Vout = Vs * (0.0012858 * P + 0.04) +/- Error
 */
 
-float MPX5xxx::read()
+float MPX5100::read()
 {
   return convert(m_adc.readADC_SingleEnded(0));
 }
 
-float MPX5xxx::pointAverage(uint8_t samples, int msDelay)
+float MPX5100::pointAverage(uint8_t samples, int msDelay)
 {
   long readings = 0;
   float average;
 
-  for (uint8_t i = 0; i < samples; i++) {
-    readings += m_adc.readADC_SingleEnded(0);
-    wait_ms(msDelay);
+  for (uint8_t i = 0; i < samples; i++)
+  {
+      uint16_t raw = m_adc.readADC_SingleEnded(0);
+      //DEBUG("Raw adc: 0x%x, %f", raw, ((float)raw * m_adc.getMiliVoltPerBit())/1000);
+      readings += raw;
+      wait_ms(msDelay);
   }
   average = readings / samples;
 
   return convert(average);
 }
 
-float MPX5xxx::rollingAverage(uint8_t samples)
+float MPX5100::rollingAverage(uint8_t samples)
 {
   static int readings[20];	      // XXX - for a max of 20.
   static uint8_t cur = 0;
@@ -77,17 +73,23 @@ float MPX5xxx::rollingAverage(uint8_t samples)
 
   //printf("readings[] = ", readings[0], ", " , readings[1], ", " , readings[2], ", "  , readings[3], ", "  , readings[4]);
 
-  if (allValid) {
-    for (uint8_t i = 0; i < samples; i++) {
+  if (allValid)
+  {
+    for (uint8_t i = 0; i < samples; i++)
+    {
       average += readings[i];
     }
     average /= samples;
-  } else {
-    for (uint8_t i = 0; i < cur; i++) {
+  } 
+  else 
+  {
+    for (uint8_t i = 0; i < cur; i++)
+    {
       average += readings[i];
     }
     average /= cur;
-    if (cur == samples) {
+    if (cur == samples)
+    {
       allValid = 1;
     }
   }
@@ -98,7 +100,7 @@ float MPX5xxx::rollingAverage(uint8_t samples)
 ** Return a symetric error value for the current operating condition of the sensor.
 */
 
-float MPX5xxx::error()
+float MPX5100::error()
 {
 }
 
@@ -106,25 +108,14 @@ float MPX5xxx::error()
 ** Private functions.
 */
 
-float MPX5xxx::convert(float reading)
+float MPX5100::convert(float reading)
 {
-  float transferConstant;
-  float Vout = (reading * m_refVolts) / A2D_FULL_SCALE;
-
-  switch (m_devType) {
-  case MPX5010:
-    transferConstant = 0.0900000;
-    break;
-  case MPX5100:
-    transferConstant = 0.0090000;
-    break;
-  case MPX5700:
-    transferConstant = 0.0012858;
-    break;
-  }
-
-  float pressure = (Vout -  m_Voffset) / (transferConstant * supplyVoltage() );
-  printf("\t", reading, "\t", Vout, "\t", pressure);
+  float transferConstant = 0.0090000;
+  float Vout = reading * (m_adc.getMiliVoltPerBit()/1000);
+  //Vout = fmap(Vout, VOUT_MIN, VOUT_MAX, 0, VOUT_MAX - VOUT_MIN);
+  float Vss = supplyVoltage();
+  float pressure = (Vout - 0.04f*Vss) / (transferConstant*Vss);
+  DEBUG("reading: %f, Vss: %f, Vout: %f, pressure: %f", reading, Vss, Vout, pressure);
 
   return pressure;
 }
@@ -135,11 +126,19 @@ float MPX5xxx::convert(float reading)
 ** it in real time.
 */
 
-float MPX5xxx::supplyVoltage()
+float MPX5100::supplyVoltage()
 {
-  /*
-  ** Should be a virtual function that can be overridden by the designer if there is a way
-  ** to measure the actual supply voltage.
-  */
-  return VSS;
+  long readings = 0;
+  float average;
+  const int samples = 20;
+  for (uint8_t i = 0; i < samples; i++)
+  {
+      uint16_t raw = m_adc.readADC_SingleEnded(1);
+      DEBUG("Raw adc: 0x%x, %f", raw, ((float)raw * m_adc.getMiliVoltPerBit())/1000);
+      readings += raw;
+      wait_ms(1);
+  }
+  average = (readings / samples) * m_adc.getMiliVoltPerBit()/1000;
+  DEBUG("MPX5100 VSS volatge: %f [V]", average);
+  return average;
 }
