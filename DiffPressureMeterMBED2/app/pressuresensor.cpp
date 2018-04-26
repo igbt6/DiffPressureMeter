@@ -13,7 +13,7 @@ PressureSensor::PressureSensor()
 //-----------------------------------------------------------------------------
 bool PressureSensor::performMeasurement()
 {
-    m_lastPressureResult = m_mpx5100.pointAverage(100, 1);
+    m_lastPressureResult = m_mpx5100.pointAverage(50, 1);
     return true;    
 }
 

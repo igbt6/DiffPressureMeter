@@ -10,7 +10,7 @@ class ResultPrinter
 public:
    typedef struct
    {
-      Time rtcTime;
+      rtctime::Time rtcTime;
    }ResultData;
 public:
     ResultPrinter(PinName uartRxPin, PinName uartTxPin);

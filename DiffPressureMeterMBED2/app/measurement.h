@@ -14,6 +14,10 @@ public:
     void run();
 
 private:
+    bool start();
+    bool measure();
+
+private:
     LUTFT   &tft;
     LUTouch &touch;
     PressureSensor pressureSensor;
