@@ -71,8 +71,6 @@ float MPX5100::rollingAverage(uint8_t samples)
 
   readings[cur++ % samples] = m_adc.readADC_SingleEnded(0);
 
-  //printf("readings[] = ", readings[0], ", " , readings[1], ", " , readings[2], ", "  , readings[3], ", "  , readings[4]);
-
   if (allValid)
   {
     for (uint8_t i = 0; i < samples; i++)
@@ -99,7 +97,6 @@ float MPX5100::rollingAverage(uint8_t samples)
 /*
 ** Return a symetric error value for the current operating condition of the sensor.
 */
-
 float MPX5100::error()
 {
 }
@@ -107,7 +104,6 @@ float MPX5100::error()
 /*
 ** Private functions.
 */
-
 float MPX5100::convert(float reading)
 {
   float transferConstant = 0.0090000;
@@ -121,16 +117,13 @@ float MPX5100::convert(float reading)
 }
 
 /*
-** Return the value of the supply voltage for the sensor. Could be overridden in a design
-** using this sensor if there is a way to get the actual value of the voltage, or to get
-** it in real time.
+** Return the value of the supply voltage for the sensor. Connected to A1 input of AD1115 module
 */
-
 float MPX5100::supplyVoltage()
 {
   long readings = 0;
   float average;
-  const int samples = 20;
+  const int samples = 10;
   for (uint8_t i = 0; i < samples; i++)
   {
       uint16_t raw = m_adc.readADC_SingleEnded(1);
