@@ -18,12 +18,14 @@ private:
     bool start();
     bool measure();
     bool postProcess();
+
 private:
     LUTFT   &tft;
     LUTouch &touch;
     PressureSensor pressureSensor;
     DigitalOut relayPin;
     ResultPrinter resultPrinter;
+    float pressureResultAverage;
 };
 
 #endif

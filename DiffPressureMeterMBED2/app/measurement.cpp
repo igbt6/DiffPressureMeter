@@ -1,6 +1,9 @@
 #include "measurement.h"
 #include "settingsmemory.h"
 #include "UTFT_Buttons.h"
+#include "externalrtc.h"
+
+using namespace rtctime;
 
 // fonts for linker
 extern uint8_t SmallFont[];
@@ -16,6 +19,7 @@ Measurement::Measurement(LUTFT &tft, LUTouch &touch)
     , pressureSensor()
     , relayPin(RELAY_OUT_PIN, HIGH)
     , resultPrinter(CSN_A2L_RX_PIN, CSN_A2L_TX_PIN)
+    , pressureResultAverage(0.0f)
 {
 }
 
@@ -65,7 +69,7 @@ bool Measurement::start()
         {
             lastSeconds++;
             char buf [10] = {'\0'};
-            sprintf (buf, "  %d  ", time);
+            sprintf (buf, "%3d", time);
             tft.print(buf, CENTER, 80);
             time--;
         }
@@ -108,18 +112,20 @@ bool Measurement::measure()
     int lastSeconds = measurementTimer.read();
     relayPin.write(LOW);
     int time = SettingsMemory::instance().appSettings().measurementTimeSecs;
+    int measCounter = 0;
+    pressureResultAverage = 0.0f;
     while (time > 0)
     {
         // measurement
-        {
-            pressureSensor.performMeasurement();
-            char buf [15] = {'\0'};
-            sprintf (buf, "%3.3f", pressureSensor.getLastResult());
-            tft.setFont(BigFont);
-            tft.setBackColor(VGA_BLUE);
-            tft.print(buf, CENTER, 120);
-            DEBUG("Last_result: %f", pressureSensor.getLastResult());
-        }
+        pressureSensor.performMeasurement();
+        pressureResultAverage += pressureSensor.getLastResult();
+        measCounter++;
+        char buf [15] = {'\0'};
+        sprintf (buf, "%3.3f", pressureSensor.getLastResult());
+        tft.setFont(BigFont);
+        tft.setBackColor(VGA_BLUE);
+        tft.print(buf, CENTER, 120);
+        DEBUG("Last_result: %3.3f", pressureSensor.getLastResult());
         if (lastSeconds < measurementTimer.read())
         {
             lastSeconds++;
@@ -139,7 +145,9 @@ bool Measurement::measure()
             }
         }
     }
-    relayPin.write(HIGH); 
+    relayPin.write(HIGH);
+    // average the result
+    pressureResultAverage = (float)pressureResultAverage / measCounter;
     return false;
 }
 //-----------------------------------------------------------------------------
@@ -165,7 +173,19 @@ bool Measurement::postProcess()
     tft.print("Pomiar zakonczony!", CENTER, 20);
     tft.print("Wynik: ", 10, 70);
     char buf [15] = {'\0'};
-    sprintf (buf, "%3.3f", pressureSensor.getLastResult()); // TODO
+    sprintf (buf, "%3.3f", pressureResultAverage);
+    Time currentTime;
+    if (ExternalRTC::instance().getTime(currentTime))
+    {
+        DEBUG_ERROR("Print result - get time failed!");
+    }
+    float temperature = ExternalRTC::instance().getTemperature();
+    ResultData resultData = {currentTime, temperature, pressureResultAverage};
+    DEBUG("-Wynik pomiaru-::: Data: %s, Czas: %s, Temperatura: %3.1f [C], Cisnienie: %3.3f", \
+            ExternalRTC::getDateString(resultData.rtcTime),
+            ExternalRTC::getTimeString(resultData.rtcTime),
+            resultData.temperature,
+            resultData.pressure);
     tft.setBackColor(VGA_BLUE);
     tft.print(buf, 130, 70);
     tft.setBackColor(VGA_BLACK);
@@ -190,7 +210,10 @@ bool Measurement::postProcess()
             }
             else if (pressed_button == butPrint)
             {
-                ResultPrinter::runTest(resultPrinter);
+                resultPrinter.setResultData(resultData);
+                DEBUG("priniting ... ");
+                resultPrinter.printResult();
+                DEBUG("priniting finished! ");
             }
             else if (pressed_button == butSave)
             {

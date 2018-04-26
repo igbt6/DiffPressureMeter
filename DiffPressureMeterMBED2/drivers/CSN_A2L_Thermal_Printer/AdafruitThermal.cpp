@@ -81,6 +81,7 @@ void AdafruitThermal::reset() {
 
 // reset formatting
 void AdafruitThermal::setDefault(){
+  wake();
   online();
   justify('L');
   inverseOff();

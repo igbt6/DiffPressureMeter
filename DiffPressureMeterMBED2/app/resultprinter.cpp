@@ -7,8 +7,63 @@ ResultPrinter::ResultPrinter(PinName uartRxPin, PinName uartTxPin)
     printer.begin();   
 }
 
+//-----------------------------------------------------------------------------
+bool ResultPrinter::printResult()
+{
+    printer.setDefault();
+    char buf[100];
+
+    char *header = "**********************\n";
+    printer.justify('C');
+    printer.print(header);
+    
+    printer.setSize('L');
+    char *measResult = "-Wyniki pomiaru-\n\n";
+    printer.print(measResult);
+
+    // date and time
+    printer.setSize('S');
+    printer.justify('L');
+    memset(buf, '\0', sizeof(buf));
+    sprintf(buf, "Data:  %s\n", ExternalRTC::getDateString(resultData.rtcTime));
+    printer.print(buf);
+    memset(buf, '\0', sizeof(buf));
+    sprintf(buf, "Czas:  %s\n", ExternalRTC::getTimeString(resultData.rtcTime));
+    printer.print(buf);
+    
+    // temperature
+    memset(buf, '\0', sizeof(buf));
+    sprintf(buf, "Temperatura:  %3.1f [C]\n", resultData.temperature);
+    printer.print(buf);
+
+    // pressure
+    printer.setSize('M');
+    memset(buf, '\0', sizeof(buf));
+    sprintf(buf, "Cisnienie:  %3.3f \n", resultData.pressure);
+    printer.underlineOn();
+    printer.print(buf);
+    printer.underlineOff();
+    printer.setSize('S');
+    memset(buf, '\0', sizeof(buf));
+    sprintf(buf, "Jednostka:  [kPa]\n\n");
+    printer.print(buf);
+
+    printer.justify('C');
+    printer.print(header);
+
+    printer.offline();
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+void ResultPrinter::setResultData(const ResultData &resultData)
+{
+    this->resultData = resultData;
+}
 
 
+//-----------------------------------------------------------------------------
+// TEST METHOD
 //-----------------------------------------------------------------------------
 void ResultPrinter::runTest(ResultPrinter& resultPrinter)
 {
@@ -59,16 +114,6 @@ void ResultPrinter::runTest(ResultPrinter& resultPrinter)
     char *Text_Out6 = "Bold Text\n";
     resultPrinter.printer.print(Text_Out6);
     resultPrinter.printer.boldOff();
-}
-//-----------------------------------------------------------------------------
-bool ResultPrinter::printResult()
-{
-   return true;
-}
-
-//-----------------------------------------------------------------------------
-void ResultPrinter::setResultData(const ResultData &resultData)
-{
-      this->resultData = resultData;
+    resultPrinter.printer.offline();
 }
 //-----------------------------------------------------------------------------

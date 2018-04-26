@@ -5,15 +5,18 @@
 #include "AdafruitThermal.h"
 #include "externalrtc.h"
 
+using namespace rtctime;
+
+typedef struct
+{
+    Time rtcTime;
+    float temperature;
+    float pressure;
+} ResultData;
+
+
 class ResultPrinter
 {
-public:
-   typedef struct
-   {
-        rtctime::Time rtcTime;
-        float temperature;
-        float pressure;
-   } ResultData;
 
 public:
     ResultPrinter(PinName uartRxPin, PinName uartTxPin);

@@ -14,6 +14,7 @@ PressureSensor::PressureSensor()
 bool PressureSensor::performMeasurement()
 {
     m_lastPressureResult = m_mpx5100.pointAverage(50, 1);
+    DEBUG("m_lastPressureResult: %3.2f", m_lastPressureResult);
     return true;    
 }
 

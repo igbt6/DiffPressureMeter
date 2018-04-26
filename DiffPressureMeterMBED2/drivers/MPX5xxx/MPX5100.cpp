@@ -53,7 +53,7 @@ float MPX5100::pointAverage(uint8_t samples, int msDelay)
   for (uint8_t i = 0; i < samples; i++)
   {
       uint16_t raw = m_adc.readADC_SingleEnded(0);
-      //DEBUG("Raw adc: 0x%x, %f", raw, ((float)raw * m_adc.getMiliVoltPerBit())/1000);
+      // DEBUG("Raw adc: 0x%x, %f", raw, ((float)raw * m_adc.getMiliVoltPerBit())/1000);
       readings += raw;
       wait_ms(msDelay);
   }
@@ -127,7 +127,7 @@ float MPX5100::supplyVoltage()
   for (uint8_t i = 0; i < samples; i++)
   {
       uint16_t raw = m_adc.readADC_SingleEnded(1);
-      DEBUG("Raw adc: 0x%x, %f", raw, ((float)raw * m_adc.getMiliVoltPerBit())/1000);
+      // DEBUG("Raw adc: 0x%x, %f", raw, ((float)raw * m_adc.getMiliVoltPerBit())/1000);
       readings += raw;
       wait_ms(1);
   }
