@@ -15,6 +15,7 @@ Measurement::Measurement(LUTFT &tft, LUTouch &touch)
     , touch(touch)
     , pressureSensor()
     , relayPin(RELAY_OUT_PIN, HIGH)
+    , resultPrinter(CSN_A2L_RX_PIN, CSN_A2L_TX_PIN)
 {
 }
 
@@ -189,7 +190,7 @@ bool Measurement::postProcess()
             }
             else if (pressed_button == butPrint)
             {
-
+                ResultPrinter::runTest(resultPrinter);
             }
             else if (pressed_button == butSave)
             {

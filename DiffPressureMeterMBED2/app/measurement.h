@@ -23,6 +23,7 @@ private:
     LUTouch &touch;
     PressureSensor pressureSensor;
     DigitalOut relayPin;
+    ResultPrinter resultPrinter;
 };
 
 #endif

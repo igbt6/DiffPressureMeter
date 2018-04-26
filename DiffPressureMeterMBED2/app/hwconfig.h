@@ -31,7 +31,7 @@
 #define CSN_A2L_TX_PIN          PA_11 //UART6_TX
 
 // RELAY
-#define RELAY_OUT_PIN           PC_0
+#define RELAY_OUT_PIN           PC_4
 
 // ESP8266 - WIFI
 #define ESP8266_RX_PIN          PA_3 //UART2_RX

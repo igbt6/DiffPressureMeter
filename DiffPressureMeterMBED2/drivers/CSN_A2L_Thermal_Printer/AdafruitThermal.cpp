@@ -25,8 +25,8 @@ AdafruitThermal::AdafruitThermal(PinName RX_Pin, PinName TX_Pin) {
 }
 
 void AdafruitThermal::begin(int heatTime) {
-  _printer = new Serial(_RX_Pin, _TX_Pin);
-  _printer->baud(9600);
+  _printer = new Serial(_TX_Pin, _RX_Pin);
+  _printer->baud(19200);
 
   // The printer can't start receiving data immediately
   // upon power up -- needs a moment to initialize.  If
