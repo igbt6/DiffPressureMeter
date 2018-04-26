@@ -63,8 +63,8 @@ bool Measurement::start()
         if (lastSeconds < delayTimer.read())
         {
             lastSeconds++;
-            char buf [4] = {'\0'};
-            sprintf (buf, "%d", time);
+            char buf [10] = {'\0'};
+            sprintf (buf, "  %d  ", time);
             tft.print(buf, CENTER, 80);
             time--;
         }

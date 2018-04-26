@@ -2,6 +2,7 @@
 
 #include "UTFT_Buttons.h"
 #include "TFT_ExtensionV2.h"
+#include "LUTouchCalibration.h"
 //-----------------------------------------------------------------------------
 using namespace rtctime;
 
@@ -28,6 +29,7 @@ MainApp::MainApp()
     , measurement(tft, touch)
     , currentState(sMainMenu)
     , _updateTime(false)
+    , _touchCalibrationCounter(0)
 {
     tft.InitLCD(LANDSCAPE);
     touch.InitTouch(SettingsMemory::instance().appSettings().calibCoeffs, tft.getOrientation());
@@ -46,6 +48,7 @@ void MainApp::run()
             {
                 break;
             }
+
             case sMainMenu:
             {
                 int res = mainMenu();
@@ -54,24 +57,39 @@ void MainApp::run()
                     DEBUG("Measurement started ...");
                     currentState = sMeasurement;
                 }
-                else
+                else if (res == 2)
                 {
                     currentState = sSettings;   
                 }
+                else if (res == 3)
+                {
+                    currentState = sTouchCalib;   
+                }
                 break;
             }
+
             case sMeasurement:
             {
                 measurement.run();
                 currentState = sMainMenu;
                 break;
             }
+
             case sSettings:
             {
                 settingsMenu();
                 currentState = sMainMenu;
                 break;
             }
+
+            case sTouchCalib:
+            {
+                LUTouchCalibration touchCalib(tft, touch);
+                touchCalib.calibrate();
+                currentState = sMainMenu;
+                break;
+            }
+
             case sInfo:
             {
                 break;
@@ -141,6 +159,12 @@ int MainApp::mainMenu()
         {
             updateTime();
             _updateTime = false;
+        }
+        
+        if (_touchCalibrationCounter > 10)
+        {
+            _touchCalibrationCounter = 0;
+            return 3;
         }
     }
 
@@ -231,6 +255,15 @@ void MainApp::updateTime()
 void MainApp::updateTimeTask()
 {
     _updateTime = true;
+    if (touch.dataAvailable() == true)
+    {
+        _touchCalibrationCounter++;
+    }
+    else
+    {
+        _touchCalibrationCounter = 0;
+    }
+    
 }
 //-----------------------------------------------------------------------------
 

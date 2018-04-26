@@ -14,6 +14,8 @@
         "xutility": "cpp",
         "xiosbase": "cpp",
         "ostream": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "vector": "cpp",
+        "initializer_list": "cpp"
     }
 }

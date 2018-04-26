@@ -26,7 +26,8 @@ public:
         sMainMenu     =  0,
         sMeasurement  =  1,
         sSettings     =  2,
-        sInfo         =  3,
+        sTouchCalib   =  3,
+        sInfo         =  4,
     };
 
     static MainApp& instance();
@@ -49,6 +50,7 @@ private:
     Measurement measurement;
     AppState currentState;
     volatile bool _updateTime;
+    volatile uint16_t _touchCalibrationCounter;
 };
 
 

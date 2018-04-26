@@ -32,7 +32,7 @@ void LUTouchCalibration::setup()
 
 void LUTouchCalibration::readCoordinates()
 {
-    int iter = 5000;
+    int iter = 10000;
     int failcount = 0;
     int cnt = 0;
     uint32_t tx=0;
@@ -158,8 +158,12 @@ void LUTouchCalibration::done()
     tft.print(buf, 75, 178);
     toHex(coeffs.calibCoeffsMemory[5]);
     tft.print(buf, 75, 190);
-
-    touch.setCalibCoefficients(coeffs);
+    // save to memory
+    SettingsFootprint settings = SettingsMemory::instance().appSettings();
+    settings.calibCoeffs = coeffs;
+    SettingsMemory::instance().saveSettings(settings);
+    touch.setCalibCoefficients(settings.calibCoeffs);
+    // go out
     tft.print("Nacisnij zeby kontynuowac", CENTER, 226);
     waitForTouch();
     tft.clrScr();

@@ -1,10 +1,10 @@
 #ifndef SETTINGSMEMORY_H
 #define SETTINGSMEMORY_H
 #include "system.h"
+#include "eeprom.h"
 #include "LUTouch.h" // for TouchCalibCoefficients
-#include "24LCxx_I2C.h"
 
-typedef _24LCXX_I2C::C24LCXX_I2C  EEPROM;
+
 struct SettingsFootprint
 {
     TouchCalibCoefficients calibCoeffs;
@@ -18,7 +18,7 @@ class SettingsMemory
 public:
     static SettingsMemory& instance();
     bool saveSettings(const SettingsFootprint &settings);
-    bool readSettings(SettingsFootprint &settings);
+    bool readSettings();
     void setDefaults();
     // returns copy of the app settings
     SettingsFootprint appSettings();
@@ -30,6 +30,7 @@ private:
     SettingsMemory();
     SettingsMemory& operator=(const SettingsMemory& memory);
     SettingsFootprint m_appSettings;
+    bool saveDefaults();
     EEPROM eeprom;
 };
 

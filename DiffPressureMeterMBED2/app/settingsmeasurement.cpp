@@ -153,12 +153,10 @@ void SettingsMeasurement::setMeasurement()
             if (measTimeChanged)
             {
                 validateMeasurementTime(settings.measurementTimeSecs);
-                measTimeChanged = false;
             }
             if (measStartDelayTimeChanged)
             {
                 validateStartMeasurementDelayTime(settings.measurementStartDelaySecs);
-                measStartDelayTimeChanged = false;
             }
         }
     }
@@ -168,7 +166,7 @@ void SettingsMeasurement::setMeasurement()
     {
         if (measTimeChanged or measStartDelayTimeChanged)
         {
-            DEBUG("Measurement setting will be saved here...");
+            DEBUG("Measurement settings will be saved here...");
             SettingsMemory::instance().saveSettings(settings);
         }
     }
