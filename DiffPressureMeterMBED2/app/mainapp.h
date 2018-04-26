@@ -12,6 +12,7 @@
 #include "settingsmeasurement.h"
 #include "measurement.h"
 #include "settingsmemory.h"
+#include "millis.h"
 
 
 

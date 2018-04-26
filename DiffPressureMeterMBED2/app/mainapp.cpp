@@ -1,7 +1,7 @@
 #include "mainapp.h"
 
 #include "UTFT_Buttons.h"
-#include "TFT_Extension.h"
+#include "TFT_ExtensionV2.h"
 //-----------------------------------------------------------------------------
 using namespace rtctime;
 
@@ -87,18 +87,21 @@ void MainApp::run()
 int MainApp::mainMenu()
 {
     // KEYBOARD DEMO
-    /*
-    TFT_Extension tftExt(&tft, &touch);
-    tftExt.ExtSetup();
-    tftExt.SetupMobileKB(0,150); //NEEDED TO WORK!
+    #if 0
+    Base B(&tft, &touch);
+    MobileKeyboard myKB(&B);
+    myKB.Colors(WHITE, BLACK, BLUE, FILL);
+    myKB.SetupMobileKB(0, 20, 320, 115);
+    char* msg;
     while(1)
     {
-        tftExt.ReceiveMsg(0,0,YELLOW); // X,Y(position on screen), Color
-        char* msg = tftExt.Mobile_KeyBoard(BLUE);
-        if(msg != NULL)
-            tft.print(msg,0,50);
+        myKB.ReceiveMsg(0,0,YELLOW); // X,Y(position on screen), Color
+        bool ret = myKB.Mobile_KeyBoard(msg, BLUE);
+        if(!ret)
+            tft.print(msg,0,0);
     }
-    */
+    #endif
+    // main menu
     tft.clrScr();
     tft.setFont(SmallFont);
     Ticker updateTimeTask;
