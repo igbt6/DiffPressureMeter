@@ -141,6 +141,7 @@ bool Measurement::measure()
             pressed_button = buttons.checkButtons();
             if (pressed_button == butBack)
             {
+                relayPin.write(HIGH);
                 return true;
             }
         }
