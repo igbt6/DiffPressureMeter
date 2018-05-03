@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "xlocale": "cpp",
-        "algorithm": "cpp",
-        "istream": "cpp",
-        "lib_config.h": "c"
-    }
-}

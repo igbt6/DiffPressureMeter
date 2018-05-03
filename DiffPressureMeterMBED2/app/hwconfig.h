@@ -21,7 +21,7 @@
 #define DS3231_SQW_PIN          PC_8 // NOT USED   
 
 // ADS1115 - 16BIT ADC 
-#define ADS1115_I2C_SDA_PIN     PB_9 //I2C1_SDA TODO
+#define ADS1115_I2C_SDA_PIN     PB_9 //I2C1_SDA
 #define ADS1115_I2C_SCL_PIN     PB_8 //I2C1_SCL
 #define ADS1115_ADDR_PIN        GND  //ADS1115 addr = 0x48 
 #define ADS1115_ALERT_RDY_PIN   PC_8 // NOT_USED
